@@ -1,4 +1,5 @@
 *
+!recipes/docker/healthcheck.sh
 !poetry.lock
 !pyproject.toml
 !recipes/docker/docker_entrypoint.sh
