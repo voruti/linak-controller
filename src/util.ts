@@ -10,6 +10,10 @@ export function bytesToHex(bytes: Uint8Array): string {
 
 export function hexToBytes(hex: string): Uint8Array {
     const hexWithoutSpaces = hex.replace(/\s/g, "");
+    if (hexWithoutSpaces.length % 2 !== 0) {
+        throw new Error("Invalid hex input");
+    }
+
     const byteCount = hexWithoutSpaces.length / 2;
     const byteArray = new Uint8Array(byteCount);
 
