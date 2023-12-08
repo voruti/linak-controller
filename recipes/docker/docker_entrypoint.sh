@@ -7,3 +7,6 @@ bluetoothd &
 /bin/bash
 
 node main.js
+
+# prevent continuous restart loops:
+sleep 300
