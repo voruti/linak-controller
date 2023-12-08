@@ -1,5 +1,6 @@
 *
-!poetry.lock
-!pyproject.toml
+!package-lock.json
+!package.json
+!tsconfig.json
 !recipes/docker/docker_entrypoint.sh
-!linak_controller/
+!src/

@@ -1,18 +1,25 @@
-FROM python:3.10
+FROM node:20 AS builder
 
 WORKDIR /app
-# allows Python's output to be seen in the log:
-ENV PYTHONUNBUFFERED=1
+
+COPY package*.json ./
+RUN npm ci
+
+COPY ./ ./
+RUN npm run build
+
+
+FROM node:20
 
 # install required packages:
 RUN apt-get update && \
     apt-get install -y bluez bluetooth
-RUN pip install poetry
 
-# linak-controller dependencies:
-COPY poetry.lock pyproject.toml ./
-RUN poetry install
+WORKDIR /app
 
-COPY ./ ./
+COPY package*.json ./
+RUN npm ci --omit dev
+
+COPY --from=builder /app/dist/ ./
 
 ENTRYPOINT ["sh", "recipes/docker/docker_entrypoint.sh"]

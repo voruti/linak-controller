@@ -8,11 +8,11 @@ services:
       dockerfile: recipes/docker/Dockerfile
     restart: always
 
-    volumes:
+    #volumes:
       # your configuration file:
-      - "./data/config.yaml:/app/config.yaml:ro"
+      #- "./data/config.yaml:/app/config.yaml:ro"
       # remember paired bluetooth devices:
-      - "./data/bluetooth/:/var/lib/bluetooth/:rw"
+      #- "./data/bluetooth/:/var/lib/bluetooth/:rw"
 
     # required for bluetooth:
     network_mode: host
