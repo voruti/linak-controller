@@ -2,7 +2,7 @@ import * as os from 'os';
 import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
-import * as noble from 'noble';
+import * as noble from '@abandonware/noble';
 import { Height } from './util';
 
 const app = express();
