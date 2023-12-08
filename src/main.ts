@@ -9,8 +9,15 @@ const app = express();
 const server = http.createServer(app);
 
 async function scan(): Promise<void> {
-    console.log("Scanning\r");
-    /*const devices =*/  await noble.startScanningAsync();
+    console.log("entering scan() function");
+    noble.on('stateChange', (state)=>{
+        console.log(state);
+
+        if (state === "poweredOn") {
+            noble.startScanningAsync();
+        }
+    });
+    /*const devices =  await noble.startScanningAsync();*/
     /*console.log(`Found ${devices.length} devices using ${config.adapterName}`);
     for (const device of devices) {
         console.log(device);
