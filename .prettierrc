@@ -8,7 +8,7 @@
       }
     },
     {
-      "files": "package.json",
+      "files": "*.json",
       "options": {
         "tabWidth": 2
       }
