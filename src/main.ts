@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 async function scan(): Promise<void> {
     console.log("Scanning\r");
-    /*const devices =*/  noble.startScanning();
+    /*const devices =*/  await noble.startScanningAsync();
     /*console.log(`Found ${devices.length} devices using ${config.adapterName}`);
     for (const device of devices) {
         console.log(device);
@@ -226,7 +226,7 @@ async function main(): Promise<void> {
             }
         }*/
 
-        scan()
+        await scan()
     } catch (e) {
         console.error("Something unexpected went wrong:",e);
     } /*finally {
