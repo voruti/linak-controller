@@ -53,7 +53,9 @@ console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
             console.log("found mac")
 
             await noble.stopScanningAsync();
+            console.log("Starting connection")
             await peripheral.connectAsync();
+            console.log("Connected")
             const characteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
             console.log("characteristics",characteristics)
