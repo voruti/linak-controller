@@ -9,6 +9,9 @@ services:
       dockerfile: recipes/docker/Dockerfile
     restart: always
 
+    environment:
+      LC_MAC_ADDRESS: "ab:ab:ab:ab:ab:ab"
+
     #volumes:
       # your configuration file:
       #- "./data/config.yaml:/app/config.yaml:ro"

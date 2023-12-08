@@ -34,9 +34,32 @@ function disconnectCallback(client: BleakClient, _?: any): void {
         connect(client);
     }
 }
+*/
+async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
+    noble.on('stateChange', async (state) => {
+        if (state === 'poweredOn') {
+        await noble.startScanningAsync();
+        }
+    });
+    
+    noble.on('discover', async (peripheral) => {
+        if (peripheral.address === process.env.LC_MAC_ADDRESS) {
+            await noble.stopScanningAsync();
+            await peripheral.connectAsync();
+            const characteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
-async function connect(client?: BleakClient, attempt: number = 0): Promise<BleakClient> {
-    try {
+            console.log("characteristics",characteristics)
+
+            /*const batteryLevel = (await characteristics[0].readAsync())[0];
+        
+            console.log(`${peripheral.address} (${peripheral.advertisement.localName}): ${batteryLevel}%`);
+        
+            await peripheral.disconnectAsync();
+            process.exit(0);*/
+        }
+    });
+
+    /*try {
         console.log("Connecting\r");
         if (!client) {
             client = new BleakClient(
@@ -66,9 +89,9 @@ async function connect(client?: BleakClient, attempt: number = 0): Promise<Bleak
             console.log(e.message);
             os.exit(1);
         }
-    }
+    }*/
 }
-
+/*
 async function disconnect(client: BleakClient): Promise<void> {
     if (client.isConnected) {
         config.disconnecting = true;
@@ -225,10 +248,10 @@ async function main(): Promise<void> {
             await forwardCommand();
         } else if (config.command === Commands.scanAdapter) {
             await scan();
-        } else {
-            client = await connect();
+        } else {*/
+            /*client =*/ await connect();
 
-            if (config.command === Commands.server) {
+            /*if (config.command === Commands.server) {
                 await runServer(client);
             } else if (config.command === Commands.tcpServer) {
                 await runTcpServer(client);
@@ -236,8 +259,6 @@ async function main(): Promise<void> {
                 await runCommand(client);
             }
         }*/
-
-        await scan()
     } catch (e) {
         console.error("Something unexpected went wrong:",e);
     } /*finally {
