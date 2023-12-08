@@ -13,7 +13,7 @@ FROM node:20
 
 # install required packages:
 RUN apt-get update && \
-    apt-get install -y bluez bluetooth
+    apt-get install -y bluez bluetooth libbluetooth-dev libudev-dev
 
 WORKDIR /app
 
