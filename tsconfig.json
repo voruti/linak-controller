@@ -9,5 +9,9 @@
     "noImplicitOverride": true
   },
   "include": ["./src/**/*"],
-  "exclude": []
+  "exclude": [],
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  }
 }
