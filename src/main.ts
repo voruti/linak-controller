@@ -36,14 +36,22 @@ function disconnectCallback(client: BleakClient, _?: any): void {
 }
 */
 async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
+console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
+
     noble.on('stateChange', async (state) => {
+        console.log("state",state);
+
         if (state === 'poweredOn') {
         await noble.startScanningAsync();
         }
     });
     
     noble.on('discover', async (peripheral) => {
+        console.log("peripheral",peripheral)
+
         if (peripheral.address === process.env.LC_MAC_ADDRESS) {
+            console.log("found mac")
+
             await noble.stopScanningAsync();
             await peripheral.connectAsync();
             const characteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
