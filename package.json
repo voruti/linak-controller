@@ -1,0 +1,16 @@
+{
+  "name": "linak-controller",
+  "version": "2.0.0",
+  "description": "Command line tool for controlling the Linak standing desks",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voruti/linak-controller.git#typescript-rewrite"
+  },
+  "author": "voruti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/voruti/linak-controller/issues"
+  },
+  "homepage": "https://github.com/voruti/linak-controller/tree/typescript-rewrite#readme"
+}
