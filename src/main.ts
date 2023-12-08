@@ -11,9 +11,13 @@ const server = http.createServer(app);
 async function scan(): Promise<void> {
     console.log("entering scan() function");
     noble.on('stateChange', (state)=>{
-        console.log(state);
+        console.log("state",state);
 
         if (state === "poweredOn") {
+            noble.on('discover', (peripheral)=>{
+                console.log("peripheral",peripheral)
+            });
+
             noble.startScanningAsync();
         }
     });
