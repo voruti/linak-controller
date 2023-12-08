@@ -20,6 +20,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit dev
 
+COPY ./recipes/docker/docker_entrypoint.sh ./
+
 COPY --from=builder /app/dist/ ./
 
-ENTRYPOINT ["sh", "recipes/docker/docker_entrypoint.sh"]
+ENTRYPOINT ["sh", "docker_entrypoint.sh"]
