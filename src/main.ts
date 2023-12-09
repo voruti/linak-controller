@@ -279,9 +279,11 @@ async function main(): Promise<void> {
         if (characteristic) {
             console.log("found capabilities characteristic:",characteristic)
 
-            await characteristic.subscribeAsync()
+            await characteristic.subscribeAsync();
+            const value = Buffer.from(new Uint8Array([127, 128, 0]));
+            console.log("sending value",value);
             await characteristic.writeAsync(
-                Buffer.from(new Uint8Array([127, 128, 0])),
+                value,
                 true
             );
             const buffer = await characteristic.readAsync();
