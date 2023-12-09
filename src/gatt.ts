@@ -128,11 +128,10 @@ export class ReferenceOutputService extends Service {
 
     static ONE = ReferenceOutputOneCharacteristic;
 
-    static decodeHeightSpeed(buffer: Buffer,config:Config): HeightAndSpeed {
-        console.log("decodeHeightSpeed entering with",buffer);
+    static decodeHeightSpeed(data: Uint8Array,config:Config): HeightAndSpeed {
+        console.log("decodeHeightSpeed entering with",data);
 
-        const other = new Uint8Array([112, 4,0,0]);
-         const dataView  = new DataView(other.buffer);
+         const dataView  = new DataView(data.buffer);
          const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
 
