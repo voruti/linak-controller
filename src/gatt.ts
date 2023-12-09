@@ -167,13 +167,13 @@ export class DPGDPGCharacteristic extends Characteristic {
     static CMD_BASE_OFFSET = 129;
     static CMD_USER_ID = 134;
 
-    /*static async readCommand(
+    static async readCommand(
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<Buffer> {
         await this.write(characteristics, Buffer.from(new Uint8Array([127, command, 0])));
-        return await characteristics.readGattChar(DPGDPGCharacteristic.uuid!);
-    }*/
+        return await this.read(characteristics)
+    }
 
     /*static async writeCommand(
         client: BleakClient,
@@ -206,24 +206,20 @@ export class DPGService extends Service {
         command: number,
         data?: Buffer 
     ) {
-        const [iter, callback] = makeIter();
+        //const [iter, callback] = makeIter();
         await this.DPG.subscribe(characteristics,()=>{});
 
+        let result: Buffer | null = null;
         if (data) {
             //await this.DPG.writeCommand(characteristics: NobleCharacteristic[], command, data);
         } else {
-            //await this.DPG.readCommand(characteristics: NobleCharacteristic[], command);
+             result = await this.DPG.readCommand(characteristics, command);
         }
 
-        /*for await (const [sender, data] of iter) {
-            // Return the first response from the callback
-            await this.DPG.unsubscribe(client);
-            if (data[0] === 1) {
-                return data.subarray(2);
-            } else {
-                return null;
-            }
-        }*/
+        await this.DPG.unsubscribe(characteristics);
+        if (result  && result[0] === 1) {
+            return result.subarray(2);
+        }
+        return null;
     }
 }
-

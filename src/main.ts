@@ -68,6 +68,8 @@ async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</
                 services = servicesAndCharacteristics.services
                 characteristics = servicesAndCharacteristics.characteristics
 
+                await Desk.initialise(characteristics)
+
                 resolve()
 
                 /*const batteryLevel = (await characteristics[0].readAsync())[0];
@@ -272,7 +274,7 @@ async function main(): Promise<void> {
         } else {*/
             /*client =*/ await connect();
 
-            console.log("between in main")
+            /*console.log("between in main")
 
             const characteristic = characteristics
         ?.filter(characteristic =>     uuidsMatch(characteristic.uuid,  "99fa0011-338a-1024-8a49-009c0215f78a"))
@@ -300,7 +302,7 @@ async function main(): Promise<void> {
 
             // should be:  rawbytes: bytearray(b'\xba\x01')
             // Capabilities: {'memSize': 2, 'autoUp': True, 'autoDown': True, 'bleAllow': True, 'hasDisplay': False, 'hasLight': True}
-        }
+        }*/
 
             /*if (config.command === Commands.server) {
                 await runServer(client);

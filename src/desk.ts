@@ -1,18 +1,18 @@
 // High level helper class to organise methods for performing actions with a Linak Desk.
 
-import { Peripheral } from '@abandonware/noble';
-// import { DPGService } from './gatt';
+import * as noble from '@abandonware/noble';
+ import { DPGService } from './gatt';
 // import { ControlService } from './gatt';
 // import { ReferenceInputService } from './gatt';
 // import { ReferenceOutputService } from './gatt';
 import { bytesToHex, Height, Speed } from './util';
 
 export class Desk {
-    /*static async initialise(peripheral: Peripheral): Promise<void> {
+    static async initialise(characteristics: noble.Characteristic[]): Promise<void> {
         const capabilities = this.decodeCapabilities(
-            await DPGService.dpgCommand(client, DPGService.DPG.CMD_GET_CAPABILITIES)
+            await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_GET_CAPABILITIES)
         );
-        console.log(`Capabilities: ${JSON.stringify(capabilities)}`);*/
+        console.log(`Capabilities: ${JSON.stringify(capabilities)}`);
 
         /*const userId = await DPGService.dpgCommand(client, DPGService.DPG.CMD_USER_ID);
         console.log(`User ID: ${bytesToHex(userId)}`);
@@ -30,7 +30,7 @@ export class Desk {
                 config.baseHeight = baseHeight;
             }
         }*/
-    //}
+    }
 /*
     static async wakeup(client: BleakClient): Promise<void> {
         await ControlService.COMMAND.writeCommand(client, ControlService.COMMAND.CMD_WAKEUP);
@@ -84,8 +84,8 @@ export class Desk {
         }
     }
 */
-    static decodeCapabilities(caps: Buffer) {
-        if (caps.length < 2) {
+    static decodeCapabilities(caps: Buffer | null) {
+        if (!caps || caps.length < 2) {
             return {};
         }
         console.log("caps",caps)
