@@ -129,9 +129,13 @@ export class ReferenceOutputService extends Service {
     static ONE = ReferenceOutputOneCharacteristic;
 
     static decodeHeightSpeed(buffer: Buffer,config:Config): HeightAndSpeed {
+        console.log("decodeHeightSpeed entering with",buffer);
+
          const dataView  = new DataView(buffer.buffer);
          const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
+
+        console.log("result is height",height,"and speed",speed);
         return {
             height:new Height(height,config),
              speed:new Speed(speed)
