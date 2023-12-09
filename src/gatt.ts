@@ -132,7 +132,7 @@ export class ReferenceOutputService extends Service {
         console.log("decodeHeightSpeed entering with",buffer);
 
          const dataView  = new DataView(buffer.buffer);
-         const height: number = dataView.getUint16(0, true);
+         const height: number = dataView.getInt16(0, true);
         const speed: number = dataView.getInt16(2, true);
 
         console.log("result is height",height,"and speed",speed);
