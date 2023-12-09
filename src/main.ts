@@ -279,11 +279,11 @@ async function main(): Promise<void> {
         if (characteristic) {
             console.log("found capabilities characteristic:",characteristic)
 
-            await characteristic.subscribeAsync()
+            /*await characteristic.subscribeAsync()
             await characteristic.writeAsync(
                 Buffer.from(new Uint8Array([127, 128, 0])),
                 true
-            );
+            );*/
             const buffer = await characteristic.readAsync();
             console.log("buffer",buffer)
 
