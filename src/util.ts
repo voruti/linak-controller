@@ -39,6 +39,47 @@ export function uuidsMatch(uuid1?:string|null,uuid2?:string|null):boolean{
     return uuid1?.toLowerCase()?.replaceAll("-","") === uuid2?.toLowerCase()?.replaceAll("-","")
 }
 
+class AsyncQueue<T> {
+    private queue: Array<{
+        resolve: (value: T) => void;
+        reject: (error: any) => void;
+    }> = [];
+
+    put(value: T): void {
+        const item = this.queue.shift();
+        if (item) {
+            item.resolve(value);
+        }
+    }
+
+    async get(): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            this.queue.push({ resolve, reject });
+        });
+    }
+}
+
+export function makeIter<T>() {
+    const queue = new AsyncQueue<T>();
+
+    function put(...args: T[]): void {
+        if (args.length === 1) {
+            queue.put(args[0]);
+        } else {
+            // Handle the case where more than one argument is provided.
+            throw new Error("Invalid number of arguments provided to put");
+        }
+    }
+
+    async function* get(): AsyncGenerator<T, void, unknown> {
+        while (true) {
+            yield await queue.get();
+        }
+    }
+
+    return [get(), put];
+}
+
 export class Height {
     private _value: number;
 
