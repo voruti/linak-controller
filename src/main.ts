@@ -4,6 +4,7 @@ import * as http from 'http';
 import * as express from 'express';
 import  * as noble from '@abandonware/noble';
 import { Height ,uuidsMatch} from './util';
+import { Desk } from './desk';
 
 const app = express();
 const server = http.createServer(app);
@@ -283,6 +284,9 @@ async function main(): Promise<void> {
             );
             const buffer = await characteristic.readAsync();
             console.log("buffer",buffer)
+
+            const decoded = Desk.decodeCapabilities(buffer)
+            console.log("decoded",decoded)
         }
 
             /*if (config.command === Commands.server) {
