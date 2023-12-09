@@ -272,6 +272,8 @@ async function main(): Promise<void> {
         } else {*/
             /*client =*/ await connect();
 
+            console.log("between in main")
+
             const characteristic = characteristics
         ?.filter(characteristic =>     uuidsMatch(characteristic.uuid,  "99fa0011-338a-1024-8a49-009c0215f78a"))
         [0];
