@@ -21,6 +21,7 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
+        console.log(characteristic.uuid,"read")
         return characteristic.readAsync();
     }
 
@@ -29,6 +30,7 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
+        console.log(characteristic.uuid,"write",value)
         return  characteristic            .writeAsync( value, true);
     }
 
@@ -37,8 +39,12 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
         
-        characteristic.on('notify', callback);
+        characteristic.on('notify', (state)=>{
+            console.log(characteristic.uuid,"received notification",state)
+            callback(state);
+        });
 
+        console.log(characteristic.uuid,"subscribe")
         return  characteristic.subscribeAsync();
     }
 
@@ -49,6 +55,7 @@ abstract class Characteristic {
         
         characteristic.removeAllListeners("notify")
 
+        console.log(characteristic.uuid,"unsubscribe")
         return  characteristic.unsubscribeAsync();
     }
 }

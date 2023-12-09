@@ -9,11 +9,13 @@ import { bytesToHex, Height, Speed } from './util';
 
 export class Desk {
     static async initialise(characteristics: noble.Characteristic[]): Promise<void> {
+        // Read capabilities
         const capabilities = this.decodeCapabilities(
             await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_GET_CAPABILITIES)
         );
         console.log(`Capabilities: ${JSON.stringify(capabilities)}`);
 
+        // Read the user id
         /*const userId = await DPGService.dpgCommand(client, DPGService.DPG.CMD_USER_ID);
         console.log(`User ID: ${bytesToHex(userId)}`);
         if (userId && userId[0] !== 1) {
