@@ -2,7 +2,11 @@
 
 const baseHeight: number = 640; // TODO: replace with dynamically
 
-export function bytesToHex(bytes: Uint8Array): string {
+export function bytesToHex(bytes?: Uint8Array|null): string|undefined|null {
+    if (bytes === undefined || bytes === null){
+        return bytes;
+    }
+
     return Array.from(bytes)
         .map((byte) => byte.toString(16).padStart(2, "0"))
         .join(" ");

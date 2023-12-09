@@ -16,15 +16,17 @@ export class Desk {
         console.log(`Capabilities: ${JSON.stringify(capabilities)}`);
 
         // Read the user id
-        /*const userId = await DPGService.dpgCommand(client, DPGService.DPG.CMD_USER_ID);
+        const userId = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_USER_ID);
         console.log(`User ID: ${bytesToHex(userId)}`);
         if (userId && userId[0] !== 1) {
+            // For DPG1C it is important that the first byte is set to 1
+            // The other bytes do not seem to matter
             userId[0] = 1;
-            console.log(`Setting user ID to ${bytesToHex(userId)}`);
-            await DPGService.dpgCommand(client, DPGService.DPG.CMD_USER_ID, userId);
+            //console.log(`Setting user ID to ${bytesToHex(userId)}`);
+            //await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_USER_ID, userId);
         }
 
-        if (config.baseHeight === null) {
+        /*if (config.baseHeight === null) {
             const resp = await DPGService.dpgCommand(client, DPGService.DPG.CMD_BASE_OFFSET);
             if (resp) {
                 const baseHeight = struct.unpack('<H', resp.slice(1))[0] / 10;
