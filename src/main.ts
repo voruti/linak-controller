@@ -40,7 +40,7 @@ function disconnectCallback(client: BleakClient, _?: any): void {
     }
 }
 */
-async function connect(config:Config/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
+async function connect(config:Config/*client?: BleakClient, attempt: number = 0*/): Promise<noble.Peripheral> {
     console.log("Trying to connect to", config.macAddress)
 
     noble.on('stateChange', async (state) => {
@@ -69,9 +69,9 @@ async function connect(config:Config/*client?: BleakClient, attempt: number = 0*
                 services = servicesAndCharacteristics.services;
                 characteristics = servicesAndCharacteristics.characteristics;
 
-                await Desk.initialise(characteristics,config);
+                await Desk.initialize(characteristics,config);
 
-                resolve();
+                resolve(peripheral);
             }
         });
     });
@@ -261,20 +261,22 @@ async function main(): Promise<void> {
     try {
         const config = new Config();
 
-        /*let client: BleakClient | null = null;
+        let peripheral: noble.Peripheral | null = null;
 
-        if (config.forward) {
+        /*if (config.forward) {
             await forwardCommand();
         } else if (config.command === Commands.scanAdapter) {
             await scan();
         } else {*/
-            /*client =*/ await connect(config);
+            peripheral = await connect(config);
 
             if (characteristics) {
                 await Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });
             }
+
+            await peripheral.disconnectAsync();
 
             /*if (config.command === Commands.server) {
                 await runServer(client);

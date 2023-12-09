@@ -9,7 +9,7 @@ import { bytesToHex, Height, HeightAndSpeed, sleep, Speed } from './util';
 import { Config } from './config';
 
 export class Desk {
-    static async initialise(characteristics: noble.Characteristic[],config:Config): Promise<void> {
+    static async initialize(characteristics: noble.Characteristic[],config:Config): Promise<void> {
         // Read capabilities
         const capabilities = this.decodeCapabilities(
             await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_GET_CAPABILITIES)
