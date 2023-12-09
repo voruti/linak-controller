@@ -122,10 +122,10 @@ export class ReferenceOutputService extends Service {
         return [new Height(height), new Speed(speed)];
     }
 
-    static async getHeightSpeed(client: BleakClient): Promise<[Height, Speed]> {
+    /*static async getHeightSpeed(client: BleakClient): Promise<[Height, Speed]> {
         const data = await this.ONE.read(client);
         return this.decodeHeightSpeed(data);
-    }
+    }*/
 }
 
 // Control
@@ -143,7 +143,7 @@ export class ControlCommandCharacteristic extends Characteristic {
         command: number
     ): Promise<void> {
         const value = Buffer.from(new Uint8Array(new Uint16Array([command, 0]).buffer));
-        await characteristics.writeGattChar(ControlCommandCharacteristic.uuid!, value);
+        //await characteristics.writeGattChar(ControlCommandCharacteristic.uuid!, value);
     }
 }
 
@@ -167,13 +167,13 @@ export class DPGDPGCharacteristic extends Characteristic {
     static CMD_BASE_OFFSET = 129;
     static CMD_USER_ID = 134;
 
-    static async readCommand(
+    /*static async readCommand(
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<Buffer> {
         await this.write(characteristics, Buffer.from(new Uint8Array([127, command, 0])));
         return await characteristics.readGattChar(DPGDPGCharacteristic.uuid!);
-    }
+    }*/
 
     /*static async writeCommand(
         client: BleakClient,
@@ -212,7 +212,7 @@ export class DPGService extends Service {
         if (data) {
             //await this.DPG.writeCommand(characteristics: NobleCharacteristic[], command, data);
         } else {
-            await this.DPG.readCommand(characteristics: NobleCharacteristic[], command);
+            //await this.DPG.readCommand(characteristics: NobleCharacteristic[], command);
         }
 
         /*for await (const [sender, data] of iter) {
