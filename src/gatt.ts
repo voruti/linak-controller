@@ -144,7 +144,7 @@ export class ReferenceOutputService extends Service {
 
     static async getHeightSpeed(characteristics: NobleCharacteristic[],config:Config): Promise<HeightAndSpeed> {
         const data = await this.ONE.read(characteristics);
-        return this.decodeHeightSpeed(data,config);
+        return this.decodeHeightSpeed(new Uint8Array(data),config);
     }
 }
 
