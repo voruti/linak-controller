@@ -272,7 +272,7 @@ async function main(): Promise<void> {
 
             if (characteristics) {
                 Desk.getHeightSpeed(characteristics).then((heightAndSpeed:HeightAndSpeed)=>{
-                    console.log("heightAndSpeed",heightAndSpeed);
+                    console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });
             }
 
