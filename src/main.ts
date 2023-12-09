@@ -3,7 +3,7 @@ import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
 import  * as noble from '@abandonware/noble';
-import { Height ,uuidsMatch} from './util';
+import { Height ,uuidsMatch,sleep} from './util';
 import { Desk } from './desk';
 
 const app = express();
@@ -286,11 +286,15 @@ async function main(): Promise<void> {
                 value,
                 true
             );
-            const buffer = await characteristic.readAsync();
-            console.log("buffer",buffer)
 
-            const decoded = Desk.decodeCapabilities(buffer)
-            console.log("decoded",decoded)
+            console.log("waiting 1 second");
+            await sleep(1000);
+
+            const buffer = await characteristic.readAsync();
+            console.log("buffer",buffer);
+
+            const decoded = Desk.decodeCapabilities(buffer);
+            console.log("decoded",decoded);
 
             // should be:  rawbytes: bytearray(b'\xba\x01')
             // Capabilities: {'memSize': 2, 'autoUp': True, 'autoDown': True, 'bleAllow': True, 'hasDisplay': False, 'hasLight': True}

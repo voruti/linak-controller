@@ -39,6 +39,12 @@ export function uuidsMatch(uuid1?:string|null,uuid2?:string|null):boolean{
     return uuid1?.toLowerCase()?.replaceAll("-","") === uuid2?.toLowerCase()?.replaceAll("-","")
 }
 
+export function sleep(ms: number):Promise<void> {
+    return new Promise((resolve)=>{
+        setTimeout(()=>{resolve()},ms)
+    })
+}
+
 class AsyncQueue<T> {
     private queue: Array<{
         resolve: (value: T) => void;
