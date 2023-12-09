@@ -271,7 +271,7 @@ async function main(): Promise<void> {
             /*client =*/ await connect(config);
 
             if (characteristics) {
-                Desk.getHeightSpeed(characteristics).then((heightAndSpeed:HeightAndSpeed)=>{
+                Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });
             }

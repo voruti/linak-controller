@@ -45,7 +45,7 @@ export class Desk {
     }
 
     static async moveTo(characteristics: noble.Characteristic[], target: Height, config:Config): Promise<void> {
-        const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics);
+        const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics,config);
         if (heightAndSpeed.height.value === target.value) {
             return;
         }
@@ -58,7 +58,7 @@ export class Desk {
         while (true) {
             await ReferenceInputService.ONE.write(characteristics, data);
             await sleep(config.moveCommandPeriod * 1000 );
-            const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics);
+            const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics,config);
             if (heightAndSpeedUpdated.speed.value === 0) {
                 break;
             }
@@ -66,15 +66,15 @@ export class Desk {
         }
     }
 
-    static async getHeightSpeed(characteristics: noble.Characteristic[]): Promise<HeightAndSpeed> {
-        return await ReferenceOutputService.getHeightSpeed(characteristics);
+    static async getHeightSpeed(characteristics: noble.Characteristic[],config:Config): Promise<HeightAndSpeed> {
+        return await ReferenceOutputService.getHeightSpeed(characteristics,config);
     }
 
-    static async watchHeightSpeed(characteristics: noble.Characteristic[]): Promise<void> {
+    static async watchHeightSpeed(characteristics: noble.Characteristic[],config:Config): Promise<void> {
         // Listen for height changes
 
         const callback = (/*sender: any,*/ data: any) => {
-            const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data);
+            const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data,config);
             console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
         };
 

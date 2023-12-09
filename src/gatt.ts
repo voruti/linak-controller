@@ -14,6 +14,7 @@ import {
     Speed,
     HeightAndSpeed,
 } from "./util";
+import { Config } from './config';
 
 abstract class Characteristic {
     static uuid: string | null = null;
@@ -127,19 +128,19 @@ export class ReferenceOutputService extends Service {
 
     static ONE = ReferenceOutputOneCharacteristic;
 
-    static decodeHeightSpeed(buffer: Buffer): HeightAndSpeed {
+    static decodeHeightSpeed(buffer: Buffer,config:Config): HeightAndSpeed {
          const dataView  = new DataView(buffer.buffer);
          const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
         return {
-            height:new Height(height),
+            height:new Height(height,config),
              speed:new Speed(speed)
         };
     }
 
-    static async getHeightSpeed(characteristics: NobleCharacteristic[]): Promise<HeightAndSpeed> {
+    static async getHeightSpeed(characteristics: NobleCharacteristic[],config:Config): Promise<HeightAndSpeed> {
         const data = await this.ONE.read(characteristics);
-        return this.decodeHeightSpeed(data);
+        return this.decodeHeightSpeed(data,config);
     }
 }
 

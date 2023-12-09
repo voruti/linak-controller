@@ -104,7 +104,7 @@ export class Height {
     private _value: number;
     private config:Config;
 
-    constructor(height: number, convertFromHuman: boolean = false, config:Config) {
+    constructor(height: number, config:Config,convertFromHuman: boolean = false ) {
         console.log("Height#init enter",height,convertFromHuman);
 
         this.config = config;

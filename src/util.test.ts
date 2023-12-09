@@ -7,6 +7,7 @@ import {
     Height,
     Speed,
 } from "./util";
+import { Config } from "./config";
 
 describe("utli test", () => {
     describe("functions", () => {
@@ -50,7 +51,7 @@ describe("utli test", () => {
     describe("classes", () => {
         test("Height Conversion", () => {
             const humanHeight = 760;
-            const height = new Height(humanHeight, true);
+            const height = new Height(humanHeight, new Config(), true);
 
             expect(height.human).toBe(humanHeight);
         });
