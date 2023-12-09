@@ -2,10 +2,10 @@
 
 import * as noble from '@abandonware/noble';
  import { DPGService } from './gatt';
-// import { ControlService } from './gatt';
-// import { ReferenceInputService } from './gatt';
-// import { ReferenceOutputService } from './gatt';
-import { bytesToHex, Height, Speed } from './util';
+import { ControlService } from './gatt';
+ import { ReferenceInputService } from './gatt';
+ import { ReferenceOutputService } from './gatt';
+import { bytesToHex, Height, HeightAndSpeed, sleep, Speed } from './util';
 
 export class Desk {
     static async initialise(characteristics: noble.Characteristic[]): Promise<void> {
@@ -38,59 +38,61 @@ export class Desk {
             }
         //}
     }
-/*
-    static async wakeup(client: BleakClient): Promise<void> {
-        await ControlService.COMMAND.writeCommand(client, ControlService.COMMAND.CMD_WAKEUP);
+
+    static async wakeup(characteristics: noble.Characteristic[]): Promise<void> {
+        await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_WAKEUP);
     }
 
-    static async moveTo(client: BleakClient, target: Height): Promise<void> {
-        const [initialHeight, speed] = await ReferenceOutputService.getHeightSpeed(client);
-        if (initialHeight.value === target.value) {
+    static async moveTo(characteristics: noble.Characteristic[], target: Height): Promise<void> {
+        const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics);
+        if (heightAndSpeed.height.value === target.value) {
             return;
         }
 
-        await this.wakeup(client);
-        await this.stop(client);
+        await this.wakeup(characteristics);
+        await this.stop(characteristics);
 
         const data = ReferenceInputService.encodeHeight(target.value);
 
         while (true) {
-            await ReferenceInputService.ONE.write(client, data);
-            await new Promise((resolve) => setTimeout(resolve, config.moveCommandPeriod));
-            const [height, speed] = await ReferenceOutputService.getHeightSpeed(client);
-            if (speed.value === 0) {
+            await ReferenceInputService.ONE.write(characteristics, data);
+            await sleep(300 );
+            const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics);
+            if (heightAndSpeedUpdated.speed.value === 0) {
                 break;
             }
-            console.log(`Height: ${height.human.toFixed(0)}mm Speed: ${speed.human.toFixed(0)}mm/s`);
+            console.log(`Height: ${heightAndSpeedUpdated.height.human.toFixed(0)}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`);
         }
     }
 
-    static async getHeightSpeed(client: BleakClient): Promise<[Height, Speed]> {
-        return await ReferenceOutputService.getHeightSpeed(client);
+    static async getHeightSpeed(characteristics: noble.Characteristic[]): Promise<HeightAndSpeed> {
+        return await ReferenceOutputService.getHeightSpeed(characteristics);
     }
 
-    static async watchHeightSpeed(client: BleakClient): Promise<void> {
-        const callback = (sender: any, data: any) => {
-            const [height, speed] = ReferenceOutputService.decodeHeightSpeed(data);
-            console.log(`Height: ${height.human.toFixed(0)}mm Speed: ${speed.human.toFixed(0)}mm/s`);
+    static async watchHeightSpeed(characteristics: noble.Characteristic[]): Promise<void> {
+        // Listen for height changes
+
+        const callback = (/*sender: any,*/ data: any) => {
+            const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data);
+            console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
         };
 
-        await ReferenceOutputService.ONE.subscribe(client, callback);
+        await ReferenceOutputService.ONE.subscribe(characteristics, callback);
         await new Promise(() => {}); // Use a dummy promise to keep the function running
     }
 
-    static async stop(client: BleakClient): Promise<void> {
+    static async stop(characteristics: noble.Characteristic[]): Promise<void> {
         try {
-            await ControlService.COMMAND.writeCommand(client, ControlService.COMMAND.CMD_STOP);
+            await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_STOP);
         } catch (e) {
-            if (!(e instanceof BleakDBusError)) {
+            /*if (!(e instanceof BleakDBusError)) {
                 throw e;
-            }
+            }*/
             // Harmless exception that happens on Raspberry Pis
             // bleak.exc.BleakDBusError: [org.bluez.Error.NotPermitted] Write acquired
         }
     }
-*/
+
     static decodeCapabilities(caps: Buffer | null) {
         if (!caps || caps.length < 2) {
             return {};

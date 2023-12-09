@@ -105,10 +105,10 @@ export class ReferenceInputService extends Service {
 
     static ONE = ReferenceInputOneCharacteristic;
 
-    static encodeHeight(height: number | string): Uint8Array {
+    static encodeHeight(height: number | string): Buffer {
         try {
-            return new Uint8Array(
-                new Uint16Array([parseInt(height.toString())]).buffer
+            return Buffer.from( 
+                new Uint16Array([parseInt(height.toString())])
             );
         } catch (error) {
             throw new Error("Height must be an integer between 0 and 65535");
