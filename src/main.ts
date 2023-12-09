@@ -43,22 +43,26 @@ function disconnectCallback(client: BleakClient, _?: any): void {
 async function connect(config:Config/*client?: BleakClient, attempt: number = 0*/): Promise<noble.Peripheral> {
     console.log("Trying to connect to", config.macAddress)
 
-    noble.on('stateChange', async (state) => {
+    async function stateChangeCallback  (state:string) {
         console.log("state",state);
 
         if (state === 'poweredOn') {
+            noble.removeListener("stateChange", stateChangeCallback)
             await noble.startScanningAsync();
         }
-    });
+    };
+    noble.on('stateChange', stateChangeCallback);
     
     return new Promise((resolve)=>{
-        noble.on('discover', async (peripheral) => {
+        async function discoverCallback  (peripheral:noble.Peripheral) {
             console.log("peripheral",peripheral)
 
             if (peripheral.address === config.macAddress) {
-                console.log("found mac")
+                console.log("found mac address")
 
+                noble.removeListener("discover",discoverCallback);
                 await noble.stopScanningAsync();
+
                 console.log("Starting connection")
                 await peripheral.connectAsync();
                 console.log("Connected")
@@ -73,7 +77,8 @@ async function connect(config:Config/*client?: BleakClient, attempt: number = 0*
 
                 resolve(peripheral);
             }
-        });
+        };
+        noble.on('discover', discoverCallback);
     });
 
     /*try {
