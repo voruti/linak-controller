@@ -35,6 +35,10 @@ export function bytesToUtf8(bytes: Uint8Array): string {
     return new TextDecoder().decode(bytes);
 }
 
+export function uuidsMatch(uuid1?:string|null,uuid2?:string|null):boolean{
+    return uuid1?.toLowerCase()?.replaceAll("-","") === uuid2?.toLowerCase()?.replaceAll("-","")
+}
+
 export class Height {
     private _value: number;
 

@@ -2,23 +2,26 @@ import * as os from 'os';
 import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
-import * as noble from '@abandonware/noble';
-import { Height } from './util';
+import  {Service, Characteristic as NobleCharacteristic, on as nobleOn,startScanningAsync,stopScanningAsync} from '@abandonware/noble';
+import { Height ,uuidsMatch} from './util';
 
 const app = express();
 const server = http.createServer(app);
 
+let services: Service[] | undefined;
+let characteristics: NobleCharacteristic[] | undefined
+
 async function scan(): Promise<void> {
     console.log("entering scan() function");
-    noble.on('stateChange', (state)=>{
+    nobleOn('stateChange', (state)=>{
         console.log("state",state);
 
         if (state === "poweredOn") {
-            noble.on('discover', (peripheral)=>{
+            nobleOn('discover', (peripheral)=>{
                 console.log("peripheral",peripheral)
             });
 
-            noble.startScanningAsync();
+            startScanningAsync();
         }
     });
     /*const devices =  await noble.startScanningAsync();*/
@@ -36,37 +39,44 @@ function disconnectCallback(client: BleakClient, _?: any): void {
 }
 */
 async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
-console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
+    console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
 
-    noble.on('stateChange', async (state) => {
+    nobleOn('stateChange', async (state) => {
         console.log("state",state);
 
         if (state === 'poweredOn') {
-        await noble.startScanningAsync();
+            await startScanningAsync();
         }
     });
     
-    noble.on('discover', async (peripheral) => {
-        console.log("peripheral",peripheral)
+    return new Promise((resolve)=>{
+        nobleOn('discover', async (peripheral) => {
+            console.log("peripheral",peripheral)
 
-        if (peripheral.address === process.env.LC_MAC_ADDRESS) {
-            console.log("found mac")
+            if (peripheral.address === process.env.LC_MAC_ADDRESS) {
+                console.log("found mac")
 
-            await noble.stopScanningAsync();
-            console.log("Starting connection")
-            await peripheral.connectAsync();
-            console.log("Connected")
-            const characteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
+                await stopScanningAsync();
+                console.log("Starting connection")
+                await peripheral.connectAsync();
+                console.log("Connected")
 
-            console.log("characteristics",characteristics)
+                const servicesAndCharacteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
+                //console.log("servicesAndCharacteristics",servicesAndCharacteristics)
 
-            /*const batteryLevel = (await characteristics[0].readAsync())[0];
-        
-            console.log(`${peripheral.address} (${peripheral.advertisement.localName}): ${batteryLevel}%`);
-        
-            await peripheral.disconnectAsync();
-            process.exit(0);*/
-        }
+                services = servicesAndCharacteristics.services
+                characteristics = servicesAndCharacteristics.characteristics
+
+                resolve()
+
+                /*const batteryLevel = (await characteristics[0].readAsync())[0];
+            
+                console.log(`${peripheral.address} (${peripheral.advertisement.localName}): ${batteryLevel}%`);
+            
+                await peripheral.disconnectAsync();
+                process.exit(0);*/
+            }
+        });
     });
 
     /*try {
@@ -260,6 +270,20 @@ async function main(): Promise<void> {
             await scan();
         } else {*/
             /*client =*/ await connect();
+
+            const characteristic = characteristics
+        ?.filter(characteristic =>     uuidsMatch(characteristic.uuid,  "99fa0011-338a-1024-8a49-009c0215f78a"))
+        [0];
+
+        if (characteristic) {
+            await characteristic.subscribeAsync()
+            await characteristic.writeAsync(
+                Buffer.from(new Uint8Array([127, 128, 0])),
+                true
+            );
+            const buffer = await characteristic.readAsync();
+            console.log("buffer",buffer)
+        }
 
             /*if (config.command === Commands.server) {
                 await runServer(client);
