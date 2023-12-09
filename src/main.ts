@@ -2,26 +2,26 @@ import * as os from 'os';
 import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
-import  {Service, Characteristic as NobleCharacteristic, on as nobleOn,startScanningAsync,stopScanningAsync} from '@abandonware/noble';
+import  * as noble from '@abandonware/noble';
 import { Height ,uuidsMatch} from './util';
 
 const app = express();
 const server = http.createServer(app);
 
-let services: Service[] | undefined;
-let characteristics: NobleCharacteristic[] | undefined
+let services: noble.Service[] | undefined;
+let characteristics: noble.Characteristic[] | undefined
 
 async function scan(): Promise<void> {
     console.log("entering scan() function");
-    nobleOn('stateChange', (state)=>{
+    noble.on('stateChange', (state)=>{
         console.log("state",state);
 
         if (state === "poweredOn") {
-            nobleOn('discover', (peripheral)=>{
+            noble.on('discover', (peripheral)=>{
                 console.log("peripheral",peripheral)
             });
 
-            startScanningAsync();
+            noble.startScanningAsync();
         }
     });
     /*const devices =  await noble.startScanningAsync();*/
@@ -41,22 +41,22 @@ function disconnectCallback(client: BleakClient, _?: any): void {
 async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
     console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
 
-    nobleOn('stateChange', async (state) => {
+    noble.on('stateChange', async (state) => {
         console.log("state",state);
 
         if (state === 'poweredOn') {
-            await startScanningAsync();
+            await noble.startScanningAsync();
         }
     });
     
     return new Promise((resolve)=>{
-        nobleOn('discover', async (peripheral) => {
+        noble.on('discover', async (peripheral) => {
             console.log("peripheral",peripheral)
 
             if (peripheral.address === process.env.LC_MAC_ADDRESS) {
                 console.log("found mac")
 
-                await stopScanningAsync();
+                await noble.stopScanningAsync();
                 console.log("Starting connection")
                 await peripheral.connectAsync();
                 console.log("Connected")
