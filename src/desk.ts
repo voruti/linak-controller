@@ -26,14 +26,16 @@ export class Desk {
             await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_USER_ID, userId);
         }
 
-        /*if (config.baseHeight === null) {
-            const resp = await DPGService.dpgCommand(client, DPGService.DPG.CMD_BASE_OFFSET);
+        // Check if base height should be taken from controller
+        //if (config.baseHeight === null) {
+            const resp = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_BASE_OFFSET);
+            console.log("resp",resp);
             if (resp) {
-                const baseHeight = struct.unpack('<H', resp.slice(1))[0] / 10;
-                console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
-                config.baseHeight = baseHeight;
+                //const baseHeight = struct.unpack('<H', resp.slice(1))[0] / 10;
+                //console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
+                //config.baseHeight = baseHeight;
             }
-        }*/
+        //}
     }
 /*
     static async wakeup(client: BleakClient): Promise<void> {
