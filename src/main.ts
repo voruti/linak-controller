@@ -271,20 +271,9 @@ async function main(): Promise<void> {
             /*client =*/ await connect(config);
 
             if (characteristics) {
-                Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
+                await Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });
-
-                // should be:           Characteristic#read - uuid: 99fa0021-338a-1024-8a49-009c0215f78a
-// linakcontroller-linakcontroller-1  | Characteristic#read - result: bytearray(b'p\x04\x00\x00')
-// linakcontroller-linakcontroller-1  | Height#init enter: 1136, False
-// linakcontroller-linakcontroller-1  | Height#init end: 1136
-// linakcontroller-linakcontroller-1  | Speed#init enter: 0, False
-// linakcontroller-linakcontroller-1  | Speed#init end: 0
-// linakcontroller-linakcontroller-1  | Height:  739mm
-
-                // decode_height_speed entered with bytearray(b'p\x04\x00\x00')
-                // decode_height_speed height: 1136, speed: 0
             }
 
             /*if (config.command === Commands.server) {
@@ -305,6 +294,8 @@ async function main(): Promise<void> {
             console.log("Disconnected         ");
         }
     }*/
+
+    console.log("End")
 }
 
 main();
