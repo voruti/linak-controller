@@ -2,7 +2,6 @@
 
 
 import {Peripheral, Characteristic as NobleCharacteristic}  from '@abandonware/noble';
-import { parse as uuidParse } from 'uuid';
 import {
     bytesToHex,
     hexToBytes,
@@ -22,7 +21,7 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
-        console.log(uuidParse(characteristic.uuid),"read")
+        console.log(characteristic.uuid,"read")
         return characteristic.readAsync();
     }
 
@@ -31,7 +30,7 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
-        console.log(uuidParse(characteristic.uuid),"write",value)
+        console.log(characteristic.uuid,"write",value)
         return  characteristic            .writeAsync( value, true);
     }
 
@@ -41,11 +40,11 @@ abstract class Characteristic {
         [0];
         
         characteristic.on('notify', (state)=>{
-            console.log(uuidParse(characteristic.uuid),"received notification",state)
+            console.log(characteristic.uuid,"received notification",state)
             callback(state);
         });
 
-        console.log(uuidParse(characteristic.uuid),"subscribe")
+        console.log(characteristic.uuid,"subscribe")
         return  characteristic.subscribeAsync();
     }
 
@@ -56,7 +55,7 @@ abstract class Characteristic {
         
         characteristic.removeAllListeners("notify")
 
-        console.log(uuidParse(characteristic.uuid),"unsubscribe")
+        console.log(characteristic.uuid,"unsubscribe")
         return  characteristic.unsubscribeAsync();
     }
 }
