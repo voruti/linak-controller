@@ -21,7 +21,7 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
-        const result = characteristic.readAsync();
+        const result = await characteristic.readAsync();
         console.log(characteristic.uuid,"did read",result)
          return result;
     }
