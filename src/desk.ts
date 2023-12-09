@@ -88,8 +88,11 @@ export class Desk {
         if (caps.length < 2) {
             return {};
         }
+        console.log("caps",caps)
         const capByte = caps[0];
+        console.log("capByte",capByte)
         const refByte = caps[1];
+        console.log("refByte",refByte)
         return {
             memSize: capByte & 7,
             autoUp: (capByte & 8) !== 0,
