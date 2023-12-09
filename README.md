@@ -2,7 +2,7 @@
 
 (Previously `idasen-controller`)
 
-Linak makes motorised standing desks. They can be controlled by a physical switch on the desks or via bluetooth using an phone app. This is a script to control Linak desks via bluetooth from any other device.
+Linak makes motorised standing desks. They can be controlled by a physical switch on the desks or via Bluetooth using a phone app. This is a script to control Linak desks via Bluetooth from any other device.
 
 Note: This script may not work with all Linak desks - see below for comaptible models.
 
