@@ -2,8 +2,10 @@
 
 const baseHeight: number = 640; // TODO: replace with dynamically
 
-export function bytesToHex(bytes?: Uint8Array|null): string|undefined|null {
-    if (bytes === undefined || bytes === null){
+export function bytesToHex(
+    bytes?: Uint8Array | null
+): string | undefined | null {
+    if (bytes === undefined || bytes === null) {
         return bytes;
     }
 
@@ -39,14 +41,22 @@ export function bytesToUtf8(bytes: Uint8Array): string {
     return new TextDecoder().decode(bytes);
 }
 
-export function uuidsMatch(uuid1?:string|null,uuid2?:string|null):boolean{
-    return uuid1?.toLowerCase()?.replaceAll("-","") === uuid2?.toLowerCase()?.replaceAll("-","")
+export function uuidsMatch(
+    uuid1?: string | null,
+    uuid2?: string | null
+): boolean {
+    return (
+        uuid1?.toLowerCase()?.replaceAll("-", "") ===
+        uuid2?.toLowerCase()?.replaceAll("-", "")
+    );
 }
 
-export function sleep(ms: number):Promise<void> {
-    return new Promise((resolve)=>{
-        setTimeout(()=>{resolve()},ms)
-    })
+export function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
 }
 
 class AsyncQueue<T> {
@@ -144,4 +154,9 @@ export class Speed {
     public static internalSpeedToSpeed(speed: number): number {
         return speed / 100;
     }
+}
+
+export interface HeightAndSpeed {
+    height: Height;
+    speed: Speed;
 }

@@ -12,6 +12,7 @@ import {
     makeIter,
     Height,
     Speed,
+    HeightAndSpeed,
 } from "./util";
 
 abstract class Characteristic {
@@ -126,15 +127,20 @@ export class ReferenceOutputService extends Service {
 
     static ONE = ReferenceOutputOneCharacteristic;
 
-    static decodeHeightSpeed(buffer: Buffer): [Height, Speed] {
-        const [height, speed] = new Int16Array(buffer);
-        return [new Height(height), new Speed(speed)];
+    static decodeHeightSpeed(buffer: Buffer): HeightAndSpeed {
+         const dataView  = new DataView(buffer.buffer);
+         const height: number = dataView.getUint16(0, true);
+        const speed: number = dataView.getInt16(2, true);
+        return {
+            height:new Height(height),
+             speed:new Speed(speed)
+        };
     }
 
-    /*static async getHeightSpeed(client: BleakClient): Promise<[Height, Speed]> {
-        const data = await this.ONE.read(client);
+    static async getHeightSpeed(characteristics: NobleCharacteristic[]): Promise<HeightAndSpeed> {
+        const data = await this.ONE.read(characteristics);
         return this.decodeHeightSpeed(data);
-    }*/
+    }
 }
 
 // Control
@@ -152,7 +158,7 @@ export class ControlCommandCharacteristic extends Characteristic {
         command: number
     ): Promise<void> {
         const value = Buffer.from(new Uint8Array(new Uint16Array([command, 0]).buffer));
-        //await characteristics.writeGattChar(ControlCommandCharacteristic.uuid!, value);
+        this.write(characteristics,value)
     }
 }
 
@@ -203,11 +209,11 @@ export class DPGService extends Service {
 
     static DPG = DPGDPGCharacteristic;
 
-    static isValidResponse(response: Uint8Array): boolean {
+    static isValidResponse(response: Buffer): boolean {
         return response[0] === 0x1;
     }
 
-    static isValidData(data: Uint8Array): boolean {
+    static isValidData(data: Buffer): boolean {
         return data[1] > 0x1;
     }
 
