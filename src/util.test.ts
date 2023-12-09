@@ -16,8 +16,10 @@ describe("utli test", () => {
             const hexString = bytesToHex(originalBytes);
             expect(hexString).toEqual("41 42 43 44");
 
-            const convertedBytes = hexToBytes(hexString);
-            expect(convertedBytes).toEqual(originalBytes);
+            if (hexString === "41 42 43 44") {
+                const convertedBytes = hexToBytes(hexString);
+                expect(convertedBytes).toEqual(originalBytes);
+            }
         });
 
         describe("bytesToInt", () => {
