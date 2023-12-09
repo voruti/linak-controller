@@ -21,8 +21,9 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
 
-        console.log(characteristic.uuid,"read")
-        return characteristic.readAsync();
+        const result = characteristic.readAsync();
+        console.log(characteristic.uuid,"did read",result)
+         return result;
     }
 
     static async write(characteristics: NobleCharacteristic[], value: Buffer): Promise<void> {
