@@ -29,10 +29,11 @@ export class Desk {
         // Check if base height should be taken from controller
         //if (config.baseHeight === null) {
             const resp = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_BASE_OFFSET);
-            console.log("resp",resp);
+            console.log("baseHeight resp:",resp);
             if (resp) {
-                //const baseHeight = struct.unpack('<H', resp.slice(1))[0] / 10;
-                //console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
+                // unsigned short integer in little-endian byte order
+                const baseHeight = resp.subarray(1).readUInt16LE(0) / 10;
+                console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
                 //config.baseHeight = baseHeight;
             }
         //}
