@@ -5,6 +5,7 @@ import * as express from 'express';
 import  * as noble from '@abandonware/noble';
 import { Height ,uuidsMatch,sleep} from './util';
 import { Desk } from './desk';
+import { Config } from './config';
 
 const app = express();
 const server = http.createServer(app);
@@ -39,8 +40,8 @@ function disconnectCallback(client: BleakClient, _?: any): void {
     }
 }
 */
-async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
-    console.log("Trying to connect to", process.env.LC_MAC_ADDRESS)
+async function connect(config:Config/*client?: BleakClient, attempt: number = 0*/): Promise</*BleakClient*/void> {
+    console.log("Trying to connect to", config.macAddress)
 
     noble.on('stateChange', async (state) => {
         console.log("state",state);
@@ -54,7 +55,7 @@ async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</
         noble.on('discover', async (peripheral) => {
             console.log("peripheral",peripheral)
 
-            if (peripheral.address === process.env.LC_MAC_ADDRESS) {
+            if (peripheral.address === config.macAddress) {
                 console.log("found mac")
 
                 await noble.stopScanningAsync();
@@ -68,7 +69,7 @@ async function connect(/*client?: BleakClient, attempt: number = 0*/): Promise</
                 services = servicesAndCharacteristics.services
                 characteristics = servicesAndCharacteristics.characteristics
 
-                await Desk.initialise(characteristics)
+                await Desk.initialise(characteristics,config)
 
                 resolve()
 
@@ -265,6 +266,8 @@ async function forwardCommand(): Promise<void> {
 */
 async function main(): Promise<void> {
     try {
+        const config = new Config();
+
         /*let client: BleakClient | null = null;
 
         if (config.forward) {
@@ -272,7 +275,7 @@ async function main(): Promise<void> {
         } else if (config.command === Commands.scanAdapter) {
             await scan();
         } else {*/
-            /*client =*/ await connect();
+            /*client =*/ await connect(config);
 
             /*console.log("between in main")
 

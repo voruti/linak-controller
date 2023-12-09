@@ -6,9 +6,10 @@ import { ControlService } from './gatt';
  import { ReferenceInputService } from './gatt';
  import { ReferenceOutputService } from './gatt';
 import { bytesToHex, Height, HeightAndSpeed, sleep, Speed } from './util';
+import { Config } from './config';
 
 export class Desk {
-    static async initialise(characteristics: noble.Characteristic[]): Promise<void> {
+    static async initialise(characteristics: noble.Characteristic[],config:Config): Promise<void> {
         // Read capabilities
         const capabilities = this.decodeCapabilities(
             await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_GET_CAPABILITIES)
@@ -27,23 +28,23 @@ export class Desk {
         }
 
         // Check if base height should be taken from controller
-        //if (config.baseHeight === null) {
+        if (!config.baseHeight ) {
             const resp = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_BASE_OFFSET);
             console.log("baseHeight resp:",resp);
             if (resp) {
                 // unsigned short integer in little-endian byte order
                 const baseHeight = resp.subarray(1).readUInt16LE(0) / 10;
                 console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
-                //config.baseHeight = baseHeight;
+                config.baseHeight = baseHeight;
             }
-        //}
+        }
     }
 
     static async wakeup(characteristics: noble.Characteristic[]): Promise<void> {
         await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_WAKEUP);
     }
 
-    static async moveTo(characteristics: noble.Characteristic[], target: Height): Promise<void> {
+    static async moveTo(characteristics: noble.Characteristic[], target: Height, config:Config): Promise<void> {
         const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics);
         if (heightAndSpeed.height.value === target.value) {
             return;
@@ -56,7 +57,7 @@ export class Desk {
 
         while (true) {
             await ReferenceInputService.ONE.write(characteristics, data);
-            await sleep(300 );
+            await sleep(config.moveCommandPeriod * 1000 );
             const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics);
             if (heightAndSpeedUpdated.speed.value === 0) {
                 break;
@@ -85,6 +86,7 @@ export class Desk {
         try {
             await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_STOP);
         } catch (e) {
+            console.error("todo handle",e)
             /*if (!(e instanceof BleakDBusError)) {
                 throw e;
             }*/
