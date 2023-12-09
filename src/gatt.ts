@@ -185,17 +185,17 @@ export class DPGDPGCharacteristic extends Characteristic {
         return await this.read(characteristics)
     }
 
-    /*static async writeCommand(
-        client: BleakClient,
+    static async writeCommand(
+        characteristics: NobleCharacteristic[],
         command: number,
-        data: Uint8Array
+        data: Buffer
     ): Promise<void> {
         const header = new Uint8Array([127, command, 128]);
         const buffer = new Uint8Array(header.length + data.length);
         buffer.set(header);
         buffer.set(data, header.length);
-        await this.write(client, buffer);
-    }*/
+        await this.write(characteristics, Buffer.from(buffer));
+    }
 }
 
 export class DPGService extends Service {
@@ -221,7 +221,7 @@ export class DPGService extends Service {
 
         let result: Buffer | null = null;
         if (data) {
-            //await this.DPG.writeCommand(characteristics: NobleCharacteristic[], command, data);
+             await this.DPG.writeCommand(characteristics, command, data);
         } else {
              result = await this.DPG.readCommand(characteristics, command);
         }
