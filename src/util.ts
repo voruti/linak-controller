@@ -104,11 +104,15 @@ export class Height {
     private _value: number;
 
     constructor(height: number, convertFromHuman: boolean = false) {
+        console.log("Height#init enter",height,convertFromHuman);
+        
         if (convertFromHuman) {
             this._value = Height.heightToInternalHeight(height);
         } else {
             this._value = height; // relative height in 10ths of a mm
         }
+
+        console.log("Height#init end",this._value);
     }
 
     public get value(): number {
@@ -132,11 +136,15 @@ export class Speed {
     private _value: number;
 
     constructor(speed: number, convert: boolean = false) {
+        console.log("Speed#init enter",speed,convert);
+        
         if (convert) {
             this._value = Speed.speedToInternalSpeed(speed);
         } else {
             this._value = speed; // speed in 100ths of a mm/s
         }
+
+        console.log("Speed#init end",this._value);
     }
 
     public get value(): number {
