@@ -3,7 +3,7 @@ import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
 import  * as noble from '@abandonware/noble';
-import { Height ,uuidsMatch,sleep} from './util';
+import { Height ,uuidsMatch,sleep, HeightAndSpeed} from './util';
 import { Desk } from './desk';
 import { Config } from './config';
 
@@ -66,19 +66,12 @@ async function connect(config:Config/*client?: BleakClient, attempt: number = 0*
                 const servicesAndCharacteristics = await peripheral.discoverAllServicesAndCharacteristicsAsync();
                 //console.log("servicesAndCharacteristics",servicesAndCharacteristics)
 
-                services = servicesAndCharacteristics.services
-                characteristics = servicesAndCharacteristics.characteristics
+                services = servicesAndCharacteristics.services;
+                characteristics = servicesAndCharacteristics.characteristics;
 
-                await Desk.initialise(characteristics,config)
+                await Desk.initialise(characteristics,config);
 
-                resolve()
-
-                /*const batteryLevel = (await characteristics[0].readAsync())[0];
-            
-                console.log(`${peripheral.address} (${peripheral.advertisement.localName}): ${batteryLevel}%`);
-            
-                await peripheral.disconnectAsync();
-                process.exit(0);*/
+                resolve();
             }
         });
     });
@@ -277,35 +270,11 @@ async function main(): Promise<void> {
         } else {*/
             /*client =*/ await connect(config);
 
-            /*console.log("between in main")
-
-            const characteristic = characteristics
-        ?.filter(characteristic =>     uuidsMatch(characteristic.uuid,  "99fa0011-338a-1024-8a49-009c0215f78a"))
-        [0];
-
-        if (characteristic) {
-            console.log("found capabilities characteristic:",characteristic)
-
-            await characteristic.subscribeAsync();
-            const value = Buffer.from(new Uint8Array([127, 128, 0]));
-            console.log("sending value",value);
-            await characteristic.writeAsync(
-                value,
-                true
-            );
-
-            console.log("waiting 1 second");
-            await sleep(1000);
-
-            const buffer = await characteristic.readAsync();
-            console.log("buffer",buffer);
-
-            const decoded = Desk.decodeCapabilities(buffer);
-            console.log("decoded",decoded);
-
-            // should be:  rawbytes: bytearray(b'\xba\x01')
-            // Capabilities: {'memSize': 2, 'autoUp': True, 'autoDown': True, 'bleAllow': True, 'hasDisplay': False, 'hasLight': True}
-        }*/
+            if (characteristics) {
+                Desk.getHeightSpeed(characteristics).then((heightAndSpeed:HeightAndSpeed)=>{
+                    console.log("heightAndSpeed",heightAndSpeed);
+                });
+            }
 
             /*if (config.command === Commands.server) {
                 await runServer(client);
@@ -316,7 +285,7 @@ async function main(): Promise<void> {
             }
         }*/
     } catch (e) {
-        console.error("Something unexpected went wrong:",e);
+        console.error("Something unexpected happened:",e);
     } /*finally {
         if (client) {
             console.log("\rDisconnecting\r");
