@@ -3,7 +3,7 @@ import { platform } from "os";
 export class Config {
     // Config
     macAddress: string = "";
-    baseHeight?: number;
+    baseHeight: number = 0;
     adapterName: string = "hci0";
     scanTimeout: number = 5;
     connectionTimeout: number = 10;

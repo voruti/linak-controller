@@ -1,6 +1,6 @@
 // Random helpers and util.
 
-const baseHeight: number = 640; // TODO: replace with dynamically
+import { Config } from "./config";
 
 export function bytesToHex(
     bytes?: Uint8Array | null
@@ -102,12 +102,15 @@ export function makeIter<T>() {
 
 export class Height {
     private _value: number;
+    private config:Config;
 
-    constructor(height: number, convertFromHuman: boolean = false) {
+    constructor(height: number, convertFromHuman: boolean = false, config:Config) {
         console.log("Height#init enter",height,convertFromHuman);
+
+        this.config = config;
         
         if (convertFromHuman) {
-            this._value = Height.heightToInternalHeight(height);
+            this._value = Height.heightToInternalHeight(height,config);
         } else {
             this._value = height; // relative height in 10ths of a mm
         }
@@ -120,15 +123,15 @@ export class Height {
     }
 
     public get human(): number {
-        return Height.internalHeightToHeight(this.value);
+        return Height.internalHeightToHeight(this.value,this.config);
     }
 
-    public static heightToInternalHeight(height: number): number {
-        return (height - baseHeight) * 10;
+    public static heightToInternalHeight(height: number,config:Config): number {
+        return (height - config.baseHeight) * 10;
     }
 
-    public static internalHeightToHeight(height: number): number {
-        return height / 10 + baseHeight;
+    public static internalHeightToHeight(height: number,config:Config): number {
+        return height / 10 + config.baseHeight;
     }
 }
 
