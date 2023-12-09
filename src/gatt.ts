@@ -8,6 +8,7 @@ import {
     bytesToInt,
     bytesToUtf8,
     uuidsMatch,
+    sleep,
     makeIter,
     Height,
     Speed,
@@ -180,6 +181,7 @@ export class DPGDPGCharacteristic extends Characteristic {
         command: number
     ): Promise<Buffer> {
         await this.write(characteristics, Buffer.from(new Uint8Array([127, command, 0])));
+        await sleep(500);
         return await this.read(characteristics)
     }
 
