@@ -84,7 +84,7 @@ export class Desk {
         }
     }
 */
-    static decodeCapabilities(caps: Buffer): Record<string, any> {
+    static decodeCapabilities(caps: Buffer) {
         if (caps.length < 2) {
             return {};
         }

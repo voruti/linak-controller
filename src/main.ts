@@ -277,6 +277,8 @@ async function main(): Promise<void> {
         [0];
 
         if (characteristic) {
+            console.log("found capabilities characteristic:",characteristic)
+
             await characteristic.subscribeAsync()
             await characteristic.writeAsync(
                 Buffer.from(new Uint8Array([127, 128, 0])),
@@ -287,6 +289,9 @@ async function main(): Promise<void> {
 
             const decoded = Desk.decodeCapabilities(buffer)
             console.log("decoded",decoded)
+
+            // should be:  rawbytes: bytearray(b'\xba\x01')
+            // Capabilities: {'memSize': 2, 'autoUp': True, 'autoDown': True, 'bleAllow': True, 'hasDisplay': False, 'hasLight': True}
         }
 
             /*if (config.command === Commands.server) {
