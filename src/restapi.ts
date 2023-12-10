@@ -51,7 +51,25 @@ export class RestApi {
                 debounce("webhookPutHeight", 1000).then((shouldExecute) => {
                     if (shouldExecute && this.webhookPutHeightOptions) {
                         debugLog(config, "Executing webhook...");
-                        const req = https.request(this.webhookPutHeightOptions);
+                        const req = https.request(
+                            this.webhookPutHeightOptions,
+                            (res) => {
+                                let responseData = "";
+
+                                res.on("data", (chunk) => {
+                                    responseData += chunk;
+                                });
+
+                                res.on("end", () => {
+                                    console.log("Response:", responseData);
+                                });
+                            }
+                        );
+
+                        req.on("error", (error) => {
+                            console.error("Error:", error.message);
+                        });
+
                         req.write(heightAndSpeed.height.human.toString());
                         req.end();
                     }
