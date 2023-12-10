@@ -13,6 +13,7 @@ import {
     Height,
     Speed,
     HeightAndSpeed,
+    debugLog,
 } from "./util";
 import { Config } from './config';
 
@@ -134,13 +135,13 @@ export class ReferenceOutputService extends Service {
     static ONE = ReferenceOutputOneCharacteristic;
 
     static decodeHeightSpeed(data: Uint8Array,config:Config): HeightAndSpeed {
-        console.log("decodeHeightSpeed entering with",data);
+        debugLog(config,"decodeHeightSpeed entering with",data);
 
          const dataView  = new DataView(data.buffer);
          const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
 
-        console.log("result is height",height,"and speed",speed);
+        debugLog(config,"result is height",height,"and speed",speed);
         return {
             height:new Height(height,config),
              speed:new Speed(speed)

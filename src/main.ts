@@ -3,7 +3,7 @@ import * as util from 'util';
 import * as http from 'http';
 import * as express from 'express';
 import  * as noble from '@abandonware/noble';
-import { Height ,uuidsMatch,sleep, HeightAndSpeed} from './util';
+import { Height ,uuidsMatch,sleep, HeightAndSpeed, debugLog} from './util';
 import { Desk } from './desk';
 import { Config } from './config';
 
@@ -44,7 +44,7 @@ async function connect(config:Config/*client?: BleakClient, attempt: number = 0*
     console.log("Trying to connect to", config.macAddress)
 
     async function stateChangeCallback  (state:string) {
-        console.log("state",state);
+        debugLog(config,"state",state);
 
         if (state === 'poweredOn') {
             noble.removeListener("stateChange", stateChangeCallback)
@@ -55,7 +55,7 @@ async function connect(config:Config/*client?: BleakClient, attempt: number = 0*
     
     return new Promise((resolve)=>{
         async function discoverCallback  (peripheral:noble.Peripheral) {
-            console.log("peripheral",peripheral)
+            debugLog(config,"peripheral",peripheral)
 
             if (peripheral.address === config.macAddress) {
                 console.log("found mac address")

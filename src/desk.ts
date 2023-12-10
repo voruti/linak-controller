@@ -5,7 +5,7 @@ import * as noble from '@abandonware/noble';
 import { ControlService } from './gatt';
  import { ReferenceInputService } from './gatt';
  import { ReferenceOutputService } from './gatt';
-import { bytesToHex, Height, HeightAndSpeed, sleep, Speed } from './util';
+import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep, Speed } from './util';
 import { Config } from './config';
 
 export class Desk {
@@ -30,7 +30,7 @@ export class Desk {
         // Check if base height should be taken from controller
         if (!config.baseHeight ) {
             const resp = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_BASE_OFFSET);
-            console.log("baseHeight resp:",resp);
+            debugLog(config,"baseHeight resp:",resp);
             if (resp) {
                 // unsigned short integer in little-endian byte order
                 const baseHeight = resp.subarray(1).readUInt16LE(0) / 10;
@@ -45,27 +45,27 @@ export class Desk {
     }
 
     static async moveTo(characteristics: noble.Characteristic[], target: Height, config:Config): Promise<void> {
-        console.log("move_to - enter")
+        debugLog(config,"move_to - enter")
 
         const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics,config);
         if (heightAndSpeed.height.value === target.value) {
             return;
         }
 
-        console.log("move_to - got initial height")
+        debugLog(config,"move_to - got initial height")
         
         await this.wakeup(characteristics);
-        console.log("move_to - done wakeup")
+        debugLog(config,"move_to - done wakeup")
         await this.stop(characteristics);
-        console.log("move_to - done stop")
+        debugLog(config,"move_to - done stop")
         
         const thevalue = target.value;
-        console.log("move_to - thevalue is",thevalue);
+        debugLog(config,"move_to - thevalue is",thevalue);
         const data = ReferenceInputService.encodeHeight(thevalue);
-        console.log("move_to - target data is",data);
+        debugLog(config,"move_to - target data is",data);
         
         while (true) {
-            console.log("move_to - top of loop")
+            debugLog(config,"move_to - top of loop")
             await ReferenceInputService.ONE.write(characteristics, data);
             await sleep(config.moveCommandPeriod * 1000 );
             const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics,config);

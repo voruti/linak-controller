@@ -10,6 +10,7 @@ export class Config {
     serverAddress: string = "127.0.0.1";
     serverPort: number = 9123;
     moveCommandPeriod: number = 0.4;
+    debug: boolean = false;
 
     constructor() {
         // Overwrite config from environment variables
@@ -50,5 +51,6 @@ export class Config {
         this.moveCommandPeriod = process.env.LC_MOVE_COMMAND_PERIOD
             ? parseFloat(process.env.LC_MOVE_COMMAND_PERIOD)
             : this.moveCommandPeriod;
+        this.debug = process.env.LC_DEBUG ? true : this.debug;
     }
 }
