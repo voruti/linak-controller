@@ -60,7 +60,7 @@ export class RestApi {
         this.commonPostHeight(request.body.height, response);
     }
 
-    private getDeskHeight(_: Request, response: Response<number>): void {
+    private getDeskHeight(_: Request, response: Response): void {
         response.send(this.currentHnS.height.human);
     }
 
