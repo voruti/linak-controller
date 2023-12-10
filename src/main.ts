@@ -1,9 +1,10 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import  noble from '@abandonware/noble';
 
 import {  debugLog} from './util';
 import { Desk } from './desk';
 import { Config } from './config';
+import { RestApi } from "./restapi";
 
 async function connect(config:Config): Promise<noble.Peripheral> {
     console.log("Trying to connect to", config.macAddress.toUpperCase())
@@ -39,16 +40,10 @@ async function connect(config:Config): Promise<noble.Peripheral> {
     });
 }
 
-async function runServer(config:Config): Promise<void> {
+async function runServer(config:Config,characteristics: noble.Characteristic[]): Promise<void> {
     const app :Express = express();
 
-    /*await Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
-        console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
-    });*/
-    //await Desk.moveTo(characteristics,new Height(1151,config,true),config);
-    /*await Desk.watchHeightSpeed(characteristics,config);*/
-
-    //app.post('/', (request: Request, response: Response) => runForwardedCommand(client, req, res));
+    new RestApi(config,app,characteristics);
 
     app.listen(config.serverPort, config.serverAddress, () => {
         console.log("Server listening");
@@ -68,7 +63,7 @@ async function main(): Promise<void> {
         const {characteristics} = await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
         await Desk.initialize(characteristics,config);
-        await runServer(config);
+        await runServer(config,characteristics);
 
         // ---- in theory this line is never crossed ----
 
