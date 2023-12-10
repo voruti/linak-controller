@@ -1,11 +1,12 @@
 // High level helper class to organise methods for performing actions with a Linak Desk.
 
-import * as noble from '@abandonware/noble';
+import  noble from '@abandonware/noble';
+
  import { DPGService } from './gatt';
 import { ControlService } from './gatt';
  import { ReferenceInputService } from './gatt';
  import { ReferenceOutputService } from './gatt';
-import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep, Speed } from './util';
+import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep } from './util';
 import { Config } from './config';
 
 export class Desk {

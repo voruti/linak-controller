@@ -1,16 +1,11 @@
 // Low level helper classes to organise methods for interacting with the GATT services/characteristics provided by Linak Desks.
 
+import { Characteristic as NobleCharacteristic}  from '@abandonware/noble';
 
-import {Peripheral, Characteristic as NobleCharacteristic}  from '@abandonware/noble';
 import {
-    bytesToHex,
-    hexToBytes,
-    bytesToInt,
-    bytesToUtf8,
-    uuidsMatch,
+        uuidsMatch,
     sleep,
-    makeIter,
-    Height,
+        Height,
     Speed,
     HeightAndSpeed,
     debugLog,

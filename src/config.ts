@@ -20,7 +20,9 @@ export class Config {
             console.error("Mac address must be provided");
         }
 
-        this.macAddress = this.macAddress.toLowerCase();
+        this.macAddress = this.macAddress.trim().toLowerCase();
+        this.adapterName = this.adapterName.trim();
+        this.serverAddress = this.serverAddress.trim();
 
         const IS_WINDOWS = platform() === "win32";
 
