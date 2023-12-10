@@ -42,11 +42,12 @@ async function connect(config: Config): Promise<noble.Peripheral> {
 
 async function runServer(
     config: Config,
-    characteristics: noble.Characteristic[]
+    characteristics: noble.Characteristic[],
+    desk: Desk
 ): Promise<void> {
     const app: Express = express();
 
-    new RestApi(config, app, characteristics);
+    new RestApi(config, app, characteristics, desk);
 
     app.listen(config.serverPort, config.serverAddress, () => {
         console.log("Server listening");
@@ -59,14 +60,15 @@ async function runServer(
 
 async function main(): Promise<void> {
     try {
-        const config = new Config();
+        const config: Config = new Config();
 
         const peripheral: noble.Peripheral = await connect(config);
         const { characteristics } =
             await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
-        await Desk.initialize(characteristics, config);
-        await runServer(config, characteristics);
+        const desk: Desk = new Desk(characteristics, config);
+        await desk.initialize();
+        await runServer(config, characteristics, desk);
 
         // ---- in theory this line is never crossed ----
 

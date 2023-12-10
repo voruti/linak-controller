@@ -20,7 +20,8 @@ export class RestApi {
     constructor(
         private config: Config,
         app: Express,
-        private characteristics: noble.Characteristic[]
+        private characteristics: noble.Characteristic[],
+        private desk: Desk
     ) {
         const jsonParser = bodyParser.json();
         const textParser = bodyParser.text();
@@ -40,12 +41,12 @@ export class RestApi {
         };
 
         // fetch initial values:
-        Desk.getHeightSpeed(characteristics, config).then(
+        desk.getHeightSpeed().then(
             (heightAndSpeed: HeightAndSpeed) =>
                 (this.currentHnS = heightAndSpeed)
         );
 
-        Desk.watchHeightSpeed(characteristics, config, callback.bind(this));
+        desk.watchHeightSpeed(callback.bind(this));
     }
 
     private getDesk(_: Request, response: Response): void {
@@ -104,11 +105,7 @@ export class RestApi {
             return;
         }
 
-        Desk.moveTo(
-            this.characteristics,
-            new Height(targetHeightNumber, this.config, true),
-            this.config
-        );
+        this.desk.moveTo(new Height(targetHeightNumber, this.config, true));
 
         response.sendStatus(202);
     }
