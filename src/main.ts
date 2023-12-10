@@ -281,6 +281,7 @@ async function main(): Promise<void> {
                 });*/
                 //await Desk.moveTo(characteristics,new Height(1151,config,true),config);
                 await Desk.watchHeightSpeed(characteristics,config);
+                debugLog(config,"after watching")
             }
 
             await peripheral.disconnectAsync();
