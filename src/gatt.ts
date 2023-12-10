@@ -109,7 +109,7 @@ export class ReferenceInputService extends Service {
     static encodeHeight(height: number | string): Buffer {
         try {
             return Buffer.from( 
-                new Uint16Array([parseInt(height.toString())])
+                new Uint32Array([parseInt(height.toString())])
             );
         } catch (error) {
             throw new Error("Height must be an integer between 0 and 65535");
