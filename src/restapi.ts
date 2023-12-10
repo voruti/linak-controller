@@ -1,5 +1,5 @@
 import { Express, Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
+import bodyParser from "body-parser";
 import noble from "@abandonware/noble";
 
 import { Desk } from "./desk";
@@ -22,10 +22,17 @@ export class RestApi {
         app: Express,
         private characteristics: noble.Characteristic[]
     ) {
+        const jsonParser = bodyParser.json();
+        const textParser = bodyParser.text();
+
         app.get("/rest/desk", this.getDesk.bind(this));
-        app.post("/rest/desk", this.postDesk.bind(this));
+        app.post("/rest/desk", jsonParser, this.postDesk.bind(this));
         app.get("/rest/desk/height", this.getDeskHeight.bind(this));
-        app.post("/rest/desk/height", this.postDeskHeight.bind(this));
+        app.post(
+            "/rest/desk/height",
+            textParser,
+            this.postDeskHeight.bind(this)
+        );
         app.get("/rest/desk/speed", this.getDeskSpeed.bind(this));
 
         const callback = (heightAndSpeed: HeightAndSpeed) => {
