@@ -280,8 +280,9 @@ async function main(): Promise<void> {
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });*/
                 //await Desk.moveTo(characteristics,new Height(1151,config,true),config);
-                await Desk.watchHeightSpeed(characteristics,config);
-                debugLog(config,"after watching")
+                /*await Desk.watchHeightSpeed(characteristics,config);
+                debugLog(config,"after watching")*/
+
             }
 
             await peripheral.disconnectAsync();
