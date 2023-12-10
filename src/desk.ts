@@ -84,6 +84,7 @@ export class Desk {
         // Listen for height changes
 
         const callback = (/*sender: any,*/ data: any) => {
+            console.log("callback with",data)
             const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data,config);
             console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
         };
