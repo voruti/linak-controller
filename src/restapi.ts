@@ -60,8 +60,8 @@ export class RestApi {
         this.commonPostHeight(request.body.height, response);
     }
 
-    private getDeskHeight(_: Request, response: Response<number>): void {
-        response.send(this.currentHnS.height.human);
+    private getDeskHeight(_: Request, response: Response): void {
+        response.send(this.currentHnS.height.human.toString());
     }
 
     private postDeskHeight(
@@ -76,8 +76,8 @@ export class RestApi {
         this.commonPostHeight(request.body, response);
     }
 
-    private getDeskSpeed(_: Request, response: Response<number>): void {
-        response.send(this.currentHnS.speed.human);
+    private getDeskSpeed(_: Request, response: Response): void {
+        response.send(this.currentHnS.speed.human.toString());
     }
 
     private commonPostHeight(targetHeight: number, response: Response): void {
