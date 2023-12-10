@@ -280,6 +280,7 @@ async function main(): Promise<void> {
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });*/
                 //await Desk.moveTo(characteristics,new Height(1151,config,true),config);
+                await Desk.wakeup(characteristics);
                 await Desk.stop(characteristics);
             }
 
