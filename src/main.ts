@@ -280,7 +280,7 @@ async function main(): Promise<void> {
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
                 });*/
                 //await Desk.moveTo(characteristics,new Height(1151,config,true),config);
-                Desk.stop(characteristics);
+                await Desk.stop(characteristics);
             }
 
             await peripheral.disconnectAsync();
@@ -304,7 +304,8 @@ async function main(): Promise<void> {
         }
     }*/
 
-    console.log("End")
+    console.log("End");
+    process.exit(0);
 }
 
 main();
