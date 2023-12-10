@@ -38,18 +38,18 @@ abstract class Characteristic {
         return  characteristic            .writeAsync( value, true);
     }
 
-    static async subscribe(characteristics: NobleCharacteristic[] ,callback:(state:any)=>void): Promise<void> {
+    static async subscribe(characteristics: NobleCharacteristic[] ,callback:(data: Buffer)=>void): Promise<void> {
         const characteristic = characteristics
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
         
-        characteristic.on('notify', (state)=>{
-            console.log(characteristic.uuid,"received notification",state)
-            callback(state);
+        characteristic.on('data', (data: Buffer, _: boolean)=>{
+            console.log(characteristic.uuid,"received data",data)
+            callback(data);
         });
 
         console.log(characteristic.uuid,"subscribe")
-        return  characteristic.subscribeAsync();
+        return await characteristic.subscribeAsync();
     }
 
     static async unsubscribe(characteristics: NobleCharacteristic[]): Promise<void> {
@@ -57,10 +57,10 @@ abstract class Characteristic {
         .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
         [0];
         
-        characteristic.removeAllListeners("notify")
+        characteristic.removeAllListeners("data")
 
         console.log(characteristic.uuid,"unsubscribe")
-        return  characteristic.unsubscribeAsync();
+        return await characteristic.unsubscribeAsync();
     }
 }
 
