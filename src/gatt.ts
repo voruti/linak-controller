@@ -134,10 +134,10 @@ export class ReferenceOutputService extends Service {
 
     static ONE = ReferenceOutputOneCharacteristic;
 
-    static decodeHeightSpeed(data: Uint8Array,config:Config): HeightAndSpeed {
+    static decodeHeightSpeed(data: Buffer,config:Config): HeightAndSpeed {
         debugLog(config,"decodeHeightSpeed entering with",data);
 
-         const dataView  = new DataView(data.buffer);
+         const dataView  = new DataView(new Uint8Array(data).buffer);
          const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
 
@@ -150,7 +150,7 @@ export class ReferenceOutputService extends Service {
 
     static async getHeightSpeed(characteristics: NobleCharacteristic[],config:Config): Promise<HeightAndSpeed> {
         const data = await this.ONE.read(characteristics);
-        return this.decodeHeightSpeed(new Uint8Array(data),config);
+        return this.decodeHeightSpeed(data,config);
     }
 }
 
