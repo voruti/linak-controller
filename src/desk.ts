@@ -50,12 +50,17 @@ export class Desk {
             return;
         }
 
+        console.log("move_to - got initial height")
+        
         await this.wakeup(characteristics);
+        console.log("move_to - done wakeup")
         await this.stop(characteristics);
-
+        console.log("move_to - done stop")
+        
         const data = ReferenceInputService.encodeHeight(target.value);
-
+        
         while (true) {
+            console.log("move_to - top of loop")
             await ReferenceInputService.ONE.write(characteristics, data);
             await sleep(config.moveCommandPeriod * 1000 );
             const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics,config);
