@@ -11,6 +11,7 @@ export class Config {
     serverPort: number = 9123;
     moveCommandPeriod: number = 0.4;
     debug: boolean = false;
+    webhookPutHeight?: string;
 
     constructor() {
         // Overwrite config from environment variables
@@ -23,6 +24,7 @@ export class Config {
         this.macAddress = this.macAddress.trim().toLowerCase();
         this.adapterName = this.adapterName.trim();
         this.serverAddress = this.serverAddress.trim();
+        this.webhookPutHeight = this.webhookPutHeight?.trim();
 
         const IS_WINDOWS = platform() === "win32";
 
@@ -58,5 +60,6 @@ export class Config {
                   process.env.LC_DEBUG.trim().toLowerCase()
               )
             : this.debug;
+        this.webhookPutHeight = process.env.LC_WEBHOOK_PUT_HEIGHT;
     }
 }

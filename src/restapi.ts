@@ -1,9 +1,11 @@
 import { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
+import https from "https";
 
 import { Desk } from "./desk";
 import { Height, HeightAndSpeed, Speed, debugLog } from "./util";
 import { Config } from "./config";
+import { debounce } from "./debouncer";
 
 export interface DeskDTO {
     height: number;
@@ -11,6 +13,8 @@ export interface DeskDTO {
 }
 
 export class RestApi {
+    private readonly webhookPutHeightOptions?: https.RequestOptions;
+
     private currentHnS: HeightAndSpeed = {
         height: new Height(0, new Config()),
         speed: new Speed(0),
@@ -30,8 +34,29 @@ export class RestApi {
         );
         app.get("/rest/desk/speed", this.getDeskSpeed.bind(this));
 
+        if (config.webhookPutHeight) {
+            const webhookUrl = new URL(config.webhookPutHeight);
+            this.webhookPutHeightOptions = {
+                hostname: webhookUrl.hostname,
+                port: webhookUrl.port || 443,
+                path: webhookUrl.pathname + webhookUrl.search,
+                method: "PUT",
+            };
+        }
+
         const callback = (heightAndSpeed: HeightAndSpeed) => {
             this.currentHnS = heightAndSpeed;
+
+            if (this.webhookPutHeightOptions) {
+                debounce("webhookPutHeight", 1000).then((shouldExecute) => {
+                    if (shouldExecute && this.webhookPutHeightOptions) {
+                        debugLog(config, "Executing webhook...");
+                        const req = https.request(this.webhookPutHeightOptions);
+                        req.write(heightAndSpeed.height);
+                        req.end();
+                    }
+                });
+            }
         };
 
         // fetch initial values:
