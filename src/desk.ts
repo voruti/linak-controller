@@ -60,6 +60,7 @@ export class Desk {
         console.log("move_to - done stop")
         
         const data = ReferenceInputService.encodeHeight(target.value);
+        console.log("move_to - target data is",data);
         
         while (true) {
             console.log("move_to - top of loop")
