@@ -276,9 +276,10 @@ async function main(): Promise<void> {
             peripheral = await connect(config);
 
             if (characteristics) {
-                await Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
+                /*await Desk.getHeightSpeed(characteristics,config).then((heightAndSpeed:HeightAndSpeed)=>{
                     console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
-                });
+                });*/
+                await Desk.moveTo(characteristics,new Height(760,config,true),config);
             }
 
             await peripheral.disconnectAsync();
