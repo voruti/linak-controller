@@ -45,6 +45,8 @@ export class Desk {
     }
 
     static async moveTo(characteristics: noble.Characteristic[], target: Height, config:Config): Promise<void> {
+        console.log("move_to - enter")
+
         const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics,config);
         if (heightAndSpeed.height.value === target.value) {
             return;
