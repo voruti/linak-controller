@@ -3,7 +3,7 @@ import { ParamsDictionary } from "express-serve-static-core";
 import noble from "@abandonware/noble";
 
 import { Desk } from "./desk";
-import { Height, HeightAndSpeed, Speed } from "./util";
+import { Height, HeightAndSpeed, Speed, debugLog } from "./util";
 import { Config } from "./config";
 
 export interface DeskDTO {
@@ -52,6 +52,7 @@ export class RestApi {
         request: Request<ParamsDictionary, any, DeskDTO>,
         response: Response
     ): void {
+        debugLog(this.config,"postDesk with",request.body);
         if (!request.body) {
             response.sendStatus(400);
             return;
@@ -68,6 +69,7 @@ export class RestApi {
         request: Request<ParamsDictionary, any, number>,
         response: Response
     ): void {
+        debugLog(this.config,"postDeskHeight with",request.body);
         if (!request.body) {
             response.sendStatus(400);
             return;
