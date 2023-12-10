@@ -57,7 +57,7 @@ export class RestApi {
 
     private postDesk(request: Request, response: Response): void {
         debugLog(this.config, "postDesk with", request.body);
-        if (!request.body) {
+        if (!request.body?.height) {
             response.sendStatus(400);
             return;
         }
