@@ -162,8 +162,10 @@ export class ControlCommandCharacteristic extends Characteristic {
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<void> {
-        const value = Buffer.from(new Uint8Array(new Uint16Array([command, 0]).buffer));
-        this.write(characteristics,value)
+        this.write(
+            characteristics,
+            Buffer.from(new Uint16Array([command, 0]))
+        )
     }
 }
 
