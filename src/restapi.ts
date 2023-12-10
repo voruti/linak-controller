@@ -52,7 +52,7 @@ export class RestApi {
                     if (shouldExecute && this.webhookPutHeightOptions) {
                         debugLog(config, "Executing webhook...");
                         const req = https.request(this.webhookPutHeightOptions);
-                        req.write(heightAndSpeed.height);
+                        req.write(heightAndSpeed.height.human);
                         req.end();
                     }
                 });
