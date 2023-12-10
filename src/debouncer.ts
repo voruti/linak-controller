@@ -7,7 +7,6 @@ export async function debounce(
     timeoutMs: number
 ): Promise<boolean> {
     const thisRun: string = Math.random().toString(36).substring(2, 9);
-    console.log(thisRun);
     debounceRunsMap.set(identifier, thisRun);
 
     return setTimeout(timeoutMs).then(
