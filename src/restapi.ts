@@ -41,6 +41,9 @@ export class RestApi {
                 port: webhookUrl.port || 443,
                 path: webhookUrl.pathname + webhookUrl.search,
                 method: "PUT",
+                headers: config.webhookPutHeightHeaders
+                    ? JSON.parse(config.webhookPutHeightHeaders)
+                    : undefined,
             };
         }
 
