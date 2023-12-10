@@ -61,7 +61,7 @@ export function sleep(ms: number): Promise<void> {
 
 export function debugLog(config:Config, ...args: any[]):void {
     if (config.debug) {
-        console.log(args);
+        console.log(...args);
     }
 }
 
