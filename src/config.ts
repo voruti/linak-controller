@@ -8,7 +8,7 @@ export class Config {
     scanTimeout: number = 5;
     connectionTimeout: number = 10;
     serverAddress: string = "127.0.0.1";
-    serverPort: number = 8080;
+    serverPort: number = 9123;
     moveCommandPeriod: number = 0.4;
     debug: boolean = false;
 
