@@ -51,6 +51,10 @@ export class Config {
         this.moveCommandPeriod = process.env.LC_MOVE_COMMAND_PERIOD
             ? parseFloat(process.env.LC_MOVE_COMMAND_PERIOD)
             : this.moveCommandPeriod;
-        this.debug = process.env.LC_DEBUG ? true : this.debug;
+        this.debug = process.env.LC_DEBUG
+            ? !["0", "false", "no", "wrong"].includes(
+                  process.env.LC_DEBUG.trim().toLowerCase()
+              )
+            : this.debug;
     }
 }
