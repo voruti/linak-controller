@@ -41,18 +41,15 @@ export class RestApi {
         Desk.watchHeightSpeed(characteristics, config, callback.bind(this));
     }
 
-    private getDesk(_: Request, response: Response<DeskDTO>): void {
+    private getDesk(_: Request, response: Response): void {
         response.json({
             height: this.currentHnS.height.human,
             speed: this.currentHnS.speed.human,
         });
     }
 
-    private postDesk(
-        request: Request<ParamsDictionary, any, DeskDTO>,
-        response: Response
-    ): void {
-        debugLog(this.config,"postDesk with",request.body);
+    private postDesk(request: Request, response: Response): void {
+        debugLog(this.config, "postDesk with", request.body);
         if (!request.body) {
             response.sendStatus(400);
             return;
@@ -65,11 +62,8 @@ export class RestApi {
         response.send(this.currentHnS.height.human.toString());
     }
 
-    private postDeskHeight(
-        request: Request<ParamsDictionary, any, number>,
-        response: Response
-    ): void {
-        debugLog(this.config,"postDeskHeight with",request.body);
+    private postDeskHeight(request: Request, response: Response): void {
+        debugLog(this.config, "postDeskHeight with", request.body);
         if (!request.body) {
             response.sendStatus(400);
             return;
@@ -82,20 +76,30 @@ export class RestApi {
         response.send(this.currentHnS.speed.human.toString());
     }
 
-    private commonPostHeight(targetHeight: number, response: Response): void {
-        if (isNaN(targetHeight)) {
+    private commonPostHeight(
+        targetHeight: number | string,
+        response: Response
+    ): void {
+        let targetHeightNumber: number;
+        try {
+            targetHeightNumber = parseFloat(targetHeight.toString());
+
+            if (isNaN(targetHeightNumber)) {
+                throw new Error();
+            }
+        } catch {
             response.sendStatus(400);
             return;
         }
 
-        if (targetHeight < this.config.baseHeight) {
+        if (targetHeightNumber < this.config.baseHeight) {
             response.sendStatus(422);
             return;
         }
 
         Desk.moveTo(
             this.characteristics,
-            new Height(targetHeight, this.config, true),
+            new Height(targetHeightNumber, this.config, true),
             this.config
         );
 
