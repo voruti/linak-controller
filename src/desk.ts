@@ -59,7 +59,9 @@ export class Desk {
         await this.stop(characteristics);
         console.log("move_to - done stop")
         
-        const data = ReferenceInputService.encodeHeight(target.value);
+        const thevalue = target.value;
+        console.log("move_to - thevalue is",thevalue);
+        const data = ReferenceInputService.encodeHeight(thevalue);
         console.log("move_to - target data is",data);
         
         while (true) {
