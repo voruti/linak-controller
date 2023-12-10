@@ -59,7 +59,7 @@ export function sleep(ms: number): Promise<void> {
     });
 }
 
-export function debugLog(config:Config, ...args: any[]):void {
+export function debugLog(config: Config, ...args: any[]): void {
     if (config.debug) {
         console.log(...args);
     }
@@ -109,16 +109,20 @@ export function makeIter<T>() {
 export class Height {
     private _value: number;
 
-    constructor(height: number, private config:Config,convertFromHuman: boolean = false ) {
-        debugLog(config,"Height#init enter",height,convertFromHuman);
-        
+    constructor(
+        height: number,
+        private config: Config,
+        convertFromHuman: boolean = false
+    ) {
+        debugLog(config, "Height#init enter", height, convertFromHuman);
+
         if (convertFromHuman) {
-            this._value = Height.heightToInternalHeight(height,config);
+            this._value = Height.heightToInternalHeight(height, config);
         } else {
             this._value = height; // relative height in 10ths of a mm
         }
 
-        debugLog(config,"Height#init end",this._value);
+        debugLog(config, "Height#init end", this._value);
     }
 
     public get value(): number {
@@ -126,14 +130,20 @@ export class Height {
     }
 
     public get human(): number {
-        return Height.internalHeightToHeight(this.value,this.config);
+        return Height.internalHeightToHeight(this.value, this.config);
     }
 
-    public static heightToInternalHeight(height: number,config:Config): number {
+    public static heightToInternalHeight(
+        height: number,
+        config: Config
+    ): number {
         return (height - config.baseHeight) * 10;
     }
 
-    public static internalHeightToHeight(height: number,config:Config): number {
+    public static internalHeightToHeight(
+        height: number,
+        config: Config
+    ): number {
         return height / 10 + config.baseHeight;
     }
 }

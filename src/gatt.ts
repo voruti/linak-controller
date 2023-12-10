@@ -1,61 +1,69 @@
 // Low level helper classes to organise methods for interacting with the GATT services/characteristics provided by Linak Desks.
 
-import { Characteristic as NobleCharacteristic}  from '@abandonware/noble';
+import { Characteristic as NobleCharacteristic } from "@abandonware/noble";
 
 import {
-        uuidsMatch,
+    uuidsMatch,
     sleep,
-        Height,
+    Height,
     Speed,
     HeightAndSpeed,
     debugLog,
 } from "./util";
-import { Config } from './config';
+import { Config } from "./config";
 
 abstract class Characteristic {
     static uuid: string | null = null;
 
     static async read(characteristics: NobleCharacteristic[]): Promise<Buffer> {
-        const characteristic = characteristics
-        .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
-        [0];
+        const characteristic = characteristics.filter((characteristic) =>
+            uuidsMatch(characteristic.uuid, this.uuid)
+        )[0];
 
         const result = await characteristic.readAsync();
-        console.log(characteristic.uuid,"did read",result)
-         return result;
+        console.log(characteristic.uuid, "did read", result);
+        return result;
     }
 
-    static async write(characteristics: NobleCharacteristic[], value: Buffer): Promise<void> {
-        const characteristic = characteristics
-        .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
-        [0];
+    static async write(
+        characteristics: NobleCharacteristic[],
+        value: Buffer
+    ): Promise<void> {
+        const characteristic = characteristics.filter((characteristic) =>
+            uuidsMatch(characteristic.uuid, this.uuid)
+        )[0];
 
-        console.log(characteristic.uuid,"write",value)
-        return  characteristic            .writeAsync( value, true);
+        console.log(characteristic.uuid, "write", value);
+        return characteristic.writeAsync(value, true);
     }
 
-    static async subscribe(characteristics: NobleCharacteristic[] ,callback:(data: Buffer)=>void): Promise<void> {
-        const characteristic = characteristics
-        .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
-        [0];
-        
-        characteristic.on('data', (data: Buffer, _: boolean)=>{
-            console.log(characteristic.uuid,"received data",data)
+    static async subscribe(
+        characteristics: NobleCharacteristic[],
+        callback: (data: Buffer) => void
+    ): Promise<void> {
+        const characteristic = characteristics.filter((characteristic) =>
+            uuidsMatch(characteristic.uuid, this.uuid)
+        )[0];
+
+        characteristic.on("data", (data: Buffer, _: boolean) => {
+            console.log(characteristic.uuid, "received data", data);
             callback(data);
         });
 
-        console.log(characteristic.uuid,"subscribe")
+        console.log(characteristic.uuid, "subscribe");
         return await characteristic.subscribeAsync();
     }
 
-    static async unsubscribe(characteristics: NobleCharacteristic[]): Promise<void> {
-        const characteristic = characteristics
-        .filter(characteristic =>     uuidsMatch(characteristic.uuid,  this.uuid))
-        [0];
-        
-        characteristic.removeAllListeners("data")
+    static async unsubscribe(
+        characteristics: NobleCharacteristic[]
+    ): Promise<void> {
+        const characteristic = characteristics.filter((characteristic) =>
+            uuidsMatch(characteristic.uuid, this.uuid)
+        )[0];
 
-        console.log(characteristic.uuid,"unsubscribe")
+        characteristic.removeAllListeners("data");
+
+        console.log(characteristic.uuid, "unsubscribe");
         return await characteristic.unsubscribeAsync();
     }
 }
@@ -67,23 +75,23 @@ abstract class Service {
 // Generic Access
 
 export class GenericAccessDeviceNameCharacteristic extends Characteristic {
-    static override  uuid = "00002A00-0000-1000-8000-00805F9B34FB";
+    static override uuid = "00002A00-0000-1000-8000-00805F9B34FB";
 }
 
 export class GenericAccessServiceChangedCharacteristic extends Characteristic {
-    static  override uuid = "00002A05-0000-1000-8000-00805F9B34FB";
+    static override uuid = "00002A05-0000-1000-8000-00805F9B34FB";
 }
 
 export class GenericAccessManufacturerCharacteristic extends Characteristic {
-    static  override uuid = "00002A29-0000-1000-8000-00805F9B34FB";
+    static override uuid = "00002A29-0000-1000-8000-00805F9B34FB";
 }
 
 export class GenericAccessModelNumberCharacteristic extends Characteristic {
-    static  override uuid = "00002A24-0000-1000-8000-00805F9B34FB";
+    static override uuid = "00002A24-0000-1000-8000-00805F9B34FB";
 }
 
 export class GenericAccessService extends Service {
-    static  override uuid = "00001800-0000-1000-8000-00805F9B34FB";
+    static override uuid = "00001800-0000-1000-8000-00805F9B34FB";
 
     static DEVICE_NAME = GenericAccessDeviceNameCharacteristic;
     static SERVICE_CHANGED = GenericAccessServiceChangedCharacteristic;
@@ -94,11 +102,11 @@ export class GenericAccessService extends Service {
 // Reference Input
 
 export class ReferenceInputOneCharacteristic extends Characteristic {
-    static  override uuid = "99fa0031-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0031-338a-1024-8a49-009c0215f78a";
 }
 
 export class ReferenceInputService extends Service {
-    static override  uuid = "99fa0030-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0030-338a-1024-8a49-009c0215f78a";
 
     static ONE = ReferenceInputOneCharacteristic;
 
@@ -106,7 +114,9 @@ export class ReferenceInputService extends Service {
         try {
             const intValue = parseInt(height.toString());
             if (intValue < 0 || intValue > 65535) {
-                throw new Error("Height must be an integer between 0 and 65535");
+                throw new Error(
+                    "Height must be an integer between 0 and 65535"
+                );
             }
 
             const buffer = Buffer.alloc(2); // Allocate a buffer of 2 bytes (16 bits)
@@ -121,38 +131,41 @@ export class ReferenceInputService extends Service {
 // Reference Output
 
 export class ReferenceOutputOneCharacteristic extends Characteristic {
-    static  override uuid = "99fa0021-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0021-338a-1024-8a49-009c0215f78a";
 }
 
 export class ReferenceOutputService extends Service {
-    static override  uuid = "99fa0020-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0020-338a-1024-8a49-009c0215f78a";
 
     static ONE = ReferenceOutputOneCharacteristic;
 
-    static decodeHeightSpeed(data: Buffer,config:Config): HeightAndSpeed {
-        debugLog(config,"decodeHeightSpeed entering with",data);
+    static decodeHeightSpeed(data: Buffer, config: Config): HeightAndSpeed {
+        debugLog(config, "decodeHeightSpeed entering with", data);
 
-         const dataView  = new DataView(new Uint8Array(data).buffer);
-         const height: number = dataView.getUint16(0, true);
+        const dataView = new DataView(new Uint8Array(data).buffer);
+        const height: number = dataView.getUint16(0, true);
         const speed: number = dataView.getInt16(2, true);
 
-        debugLog(config,"result is height",height,"and speed",speed);
+        debugLog(config, "result is height", height, "and speed", speed);
         return {
-            height:new Height(height,config),
-             speed:new Speed(speed)
+            height: new Height(height, config),
+            speed: new Speed(speed),
         };
     }
 
-    static async getHeightSpeed(characteristics: NobleCharacteristic[],config:Config): Promise<HeightAndSpeed> {
+    static async getHeightSpeed(
+        characteristics: NobleCharacteristic[],
+        config: Config
+    ): Promise<HeightAndSpeed> {
         const data = await this.ONE.read(characteristics);
-        return this.decodeHeightSpeed(data,config);
+        return this.decodeHeightSpeed(data, config);
     }
 }
 
 // Control
 
 export class ControlCommandCharacteristic extends Characteristic {
-    static  override uuid = "99fa0002-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0002-338a-1024-8a49-009c0215f78a";
 
     static CMD_MOVE_DOWN = 70;
     static CMD_MOVE_UP = 71;
@@ -163,19 +176,16 @@ export class ControlCommandCharacteristic extends Characteristic {
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<void> {
-        this.write(
-            characteristics,
-            Buffer.from(new Uint16Array([command, 0]))
-        )
+        this.write(characteristics, Buffer.from(new Uint16Array([command, 0])));
     }
 }
 
 export class ControlErrorCharacteristic extends Characteristic {
-    static  override uuid = "99fa0003-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0003-338a-1024-8a49-009c0215f78a";
 }
 
 export class ControlService extends Service {
-    static  override uuid = "99fa0001-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0001-338a-1024-8a49-009c0215f78a";
 
     static COMMAND = ControlCommandCharacteristic;
     static ERROR = ControlErrorCharacteristic;
@@ -184,7 +194,7 @@ export class ControlService extends Service {
 // DPG
 
 export class DPGDPGCharacteristic extends Characteristic {
-    static override  uuid = "99fa0011-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0011-338a-1024-8a49-009c0215f78a";
 
     static CMD_GET_CAPABILITIES = 128;
     static CMD_BASE_OFFSET = 129;
@@ -194,9 +204,12 @@ export class DPGDPGCharacteristic extends Characteristic {
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<Buffer> {
-        await this.write(characteristics, Buffer.from(new Uint8Array([127, command, 0])));
+        await this.write(
+            characteristics,
+            Buffer.from(new Uint8Array([127, command, 0]))
+        );
         await sleep(500);
-        return await this.read(characteristics)
+        return await this.read(characteristics);
     }
 
     static async writeCommand(
@@ -213,7 +226,7 @@ export class DPGDPGCharacteristic extends Characteristic {
 }
 
 export class DPGService extends Service {
-    static override  uuid = "99fa0010-338a-1024-8a49-009c0215f78a";
+    static override uuid = "99fa0010-338a-1024-8a49-009c0215f78a";
 
     static DPG = DPGDPGCharacteristic;
 
@@ -228,20 +241,20 @@ export class DPGService extends Service {
     static async dpgCommand(
         characteristics: NobleCharacteristic[],
         command: number,
-        data?: Buffer 
+        data?: Buffer
     ) {
         //const [iter, callback] = makeIter();
-        await this.DPG.subscribe(characteristics,()=>{});
+        await this.DPG.subscribe(characteristics, () => {});
 
         let result: Buffer | null = null;
         if (data) {
-             await this.DPG.writeCommand(characteristics, command, data);
+            await this.DPG.writeCommand(characteristics, command, data);
         } else {
-             result = await this.DPG.readCommand(characteristics, command);
+            result = await this.DPG.readCommand(characteristics, command);
         }
 
         await this.DPG.unsubscribe(characteristics);
-        if (result  && result[0] === 1) {
+        if (result && result[0] === 1) {
             return result.subarray(2);
         }
         return null;

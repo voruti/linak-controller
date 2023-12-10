@@ -1,107 +1,168 @@
 // High level helper class to organise methods for performing actions with a Linak Desk.
 
-import  noble from '@abandonware/noble';
+import noble from "@abandonware/noble";
 
- import { DPGService } from './gatt';
-import { ControlService } from './gatt';
- import { ReferenceInputService } from './gatt';
- import { ReferenceOutputService } from './gatt';
-import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep } from './util';
-import { Config } from './config';
+import { DPGService } from "./gatt";
+import { ControlService } from "./gatt";
+import { ReferenceInputService } from "./gatt";
+import { ReferenceOutputService } from "./gatt";
+import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep } from "./util";
+import { Config } from "./config";
 
 export class Desk {
-    static async initialize(characteristics: noble.Characteristic[],config:Config): Promise<void> {
+    static async initialize(
+        characteristics: noble.Characteristic[],
+        config: Config
+    ): Promise<void> {
         // Read capabilities
         const capabilities = this.decodeCapabilities(
-            await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_GET_CAPABILITIES)
+            await DPGService.dpgCommand(
+                characteristics,
+                DPGService.DPG.CMD_GET_CAPABILITIES
+            )
         );
         console.log(`Capabilities: ${JSON.stringify(capabilities)}`);
 
         // Read the user id
-        const userId = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_USER_ID);
+        const userId = await DPGService.dpgCommand(
+            characteristics,
+            DPGService.DPG.CMD_USER_ID
+        );
         console.log(`User ID: ${bytesToHex(userId)}`);
         if (userId && userId[0] !== 1) {
             // For DPG1C it is important that the first byte is set to 1
             // The other bytes do not seem to matter
             userId[0] = 1;
             console.log(`Setting user ID to ${bytesToHex(userId)}`);
-            await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_USER_ID, userId);
+            await DPGService.dpgCommand(
+                characteristics,
+                DPGService.DPG.CMD_USER_ID,
+                userId
+            );
         }
 
         // Check if base height should be taken from controller
-        if (!config.baseHeight ) {
-            const resp = await DPGService.dpgCommand(characteristics, DPGService.DPG.CMD_BASE_OFFSET);
-            debugLog(config,"baseHeight resp:",resp);
+        if (!config.baseHeight) {
+            const resp = await DPGService.dpgCommand(
+                characteristics,
+                DPGService.DPG.CMD_BASE_OFFSET
+            );
+            debugLog(config, "baseHeight resp:", resp);
             if (resp) {
                 // unsigned short integer in little-endian byte order
                 const baseHeight = resp.subarray(1).readUInt16LE(0) / 10;
-                console.log(`Base height from desk: ${baseHeight.toFixed(0)}mm`);
+                console.log(
+                    `Base height from desk: ${baseHeight.toFixed(0)}mm`
+                );
                 config.baseHeight = baseHeight;
             }
         }
     }
 
-    static async wakeup(characteristics: noble.Characteristic[]): Promise<void> {
-        await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_WAKEUP);
+    static async wakeup(
+        characteristics: noble.Characteristic[]
+    ): Promise<void> {
+        await ControlService.COMMAND.writeCommand(
+            characteristics,
+            ControlService.COMMAND.CMD_WAKEUP
+        );
     }
 
-    static async moveTo(characteristics: noble.Characteristic[], target: Height, config:Config): Promise<void> {
-        debugLog(config,"move_to - enter")
+    static async moveTo(
+        characteristics: noble.Characteristic[],
+        target: Height,
+        config: Config
+    ): Promise<void> {
+        debugLog(config, "move_to - enter");
 
-        const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(characteristics,config);
+        const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(
+            characteristics,
+            config
+        );
         if (heightAndSpeed.height.value === target.value) {
             return;
         }
 
-        debugLog(config,"move_to - got initial height")
-        
+        debugLog(config, "move_to - got initial height");
+
         await this.wakeup(characteristics);
-        debugLog(config,"move_to - done wakeup")
+        debugLog(config, "move_to - done wakeup");
         await this.stop(characteristics);
-        debugLog(config,"move_to - done stop")
-        
+        debugLog(config, "move_to - done stop");
+
         const thevalue = target.value;
-        debugLog(config,"move_to - thevalue is",thevalue);
+        debugLog(config, "move_to - thevalue is", thevalue);
         const data = ReferenceInputService.encodeHeight(thevalue);
-        debugLog(config,"move_to - target data is",data);
-        
+        debugLog(config, "move_to - target data is", data);
+
         while (true) {
-            debugLog(config,"move_to - top of loop")
+            debugLog(config, "move_to - top of loop");
             await ReferenceInputService.ONE.write(characteristics, data);
-            await sleep(config.moveCommandPeriod * 1000 );
-            const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(characteristics,config);
+            await sleep(config.moveCommandPeriod * 1000);
+            const heightAndSpeedUpdated =
+                await ReferenceOutputService.getHeightSpeed(
+                    characteristics,
+                    config
+                );
             if (heightAndSpeedUpdated.speed.value === 0) {
                 break;
             }
-            console.log(`Height: ${heightAndSpeedUpdated.height.human.toFixed(0)}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`);
+            console.log(
+                `Height: ${heightAndSpeedUpdated.height.human.toFixed(
+                    0
+                )}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`
+            );
         }
     }
 
-    static async getHeightSpeed(characteristics: noble.Characteristic[],config:Config): Promise<HeightAndSpeed> {
-        return await ReferenceOutputService.getHeightSpeed(characteristics,config);
+    static async getHeightSpeed(
+        characteristics: noble.Characteristic[],
+        config: Config
+    ): Promise<HeightAndSpeed> {
+        return await ReferenceOutputService.getHeightSpeed(
+            characteristics,
+            config
+        );
     }
 
-    static async watchHeightSpeed(characteristics: noble.Characteristic[],config:Config,callback?:(heightAndSpeed:HeightAndSpeed)=>void): Promise<void> {
+    static async watchHeightSpeed(
+        characteristics: noble.Characteristic[],
+        config: Config,
+        callback?: (heightAndSpeed: HeightAndSpeed) => void
+    ): Promise<void> {
         // Listen for height changes
 
-        const rawCallback = ( data: Buffer) => {
-            const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data,config);
-            console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
+        const rawCallback = (data: Buffer) => {
+            const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(
+                data,
+                config
+            );
+            console.log(
+                `Height: ${heightAndSpeed.height.human.toFixed(
+                    0
+                )}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`
+            );
 
             if (callback) {
-                callback(heightAndSpeed)
+                callback(heightAndSpeed);
             }
         };
 
-        await ReferenceOutputService.ONE.subscribe(characteristics, rawCallback);
+        await ReferenceOutputService.ONE.subscribe(
+            characteristics,
+            rawCallback
+        );
         await new Promise(() => {}); // Use a dummy promise to keep the function running
     }
 
     static async stop(characteristics: noble.Characteristic[]): Promise<void> {
         try {
-            await ControlService.COMMAND.writeCommand(characteristics, ControlService.COMMAND.CMD_STOP);
+            await ControlService.COMMAND.writeCommand(
+                characteristics,
+                ControlService.COMMAND.CMD_STOP
+            );
         } catch (e) {
-            console.error("todo handle",e)
+            console.error("todo handle", e);
             /*if (!(e instanceof BleakDBusError)) {
                 throw e;
             }*/
@@ -114,11 +175,11 @@ export class Desk {
         if (!caps || caps.length < 2) {
             return {};
         }
-        console.log("caps",caps)
+        console.log("caps", caps);
         const capByte = caps[0];
-        console.log("capByte",capByte)
+        console.log("capByte", capByte);
         const refByte = caps[1];
-        console.log("refByte",refByte)
+        console.log("refByte", refByte);
         return {
             memSize: capByte & 7,
             autoUp: (capByte & 8) !== 0,
