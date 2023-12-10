@@ -108,11 +108,16 @@ export class ReferenceInputService extends Service {
 
     static encodeHeight(height: number | string): Buffer {
         try {
-            return Buffer.from( 
-                new Uint32Array([parseInt(height.toString())])
-            );
+            const intValue = parseInt(height.toString());
+            if (intValue < 0 || intValue > 65535) {
+                throw new Error("Height must be an integer between 0 and 65535");
+            }
+
+            const buffer = Buffer.alloc(2); // Allocate a buffer of 2 bytes (16 bits)
+            buffer.writeUInt16LE(intValue, 0); // Write the 16-bit integer in little-endian format
+            return buffer;
         } catch (error) {
-            throw new Error("Height must be an integer between 0 and 65535");
+            throw new Error("Invalid height value");
         }
     }
 }
