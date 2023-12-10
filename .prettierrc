@@ -12,6 +12,12 @@
       "options": {
         "tabWidth": 2
       }
+    },
+    {
+      "files": "openapi.yaml",
+      "options": {
+        "tabWidth": 2
+      }
     }
   ]
 }

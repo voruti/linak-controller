@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  title: linak-controller
+  description: |-
+    Service to control LINAK standing desks.
+
+    [GitHub repository](https://github.com/voruti/linak-controller)
+
+  license:
+    name: MIT
+    url: https://github.com/voruti/linak-controller/blob/master/LICENSE
+  version: 2.0.0
+servers:
+  - url: http://localhost:8080/rest
+tags:
+  - name: desk
+    description: Control of the desk
+paths:
+  /desk:
+    get:
+      tags:
+        - desk
+      summary: Get the current state of the desk
+      description: Get the current height and speed of the desk
+      operationId: get_desk
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Desk"
+    post:
+      tags:
+        - desk
+      summary: Set the state of the desk
+      description: Set the state of the desk. Only the height can be modified/set.
+      operationId: post_desk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Desk"
+        required: true
+      responses:
+        "202":
+          description: Accepted command
+        "400":
+          description: Bad Request, syntax error, eg. invalid JSON structure
+        "422":
+          description: Unprocessable Entity, semantic error, eg. height is negative
+  /desk/height:
+    get:
+      tags:
+        - desk
+      summary: Get the current height of the desk
+      description: Get the current height of the desk
+      operationId: get_desk_height
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/DeskHeight"
+    post:
+      tags:
+        - desk
+      summary: Set the height of the desk
+      description: Set the height of the desk
+      operationId: post_desk_height
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              $ref: "#/components/schemas/DeskHeight"
+        required: true
+      responses:
+        "202":
+          description: Accepted command
+        "400":
+          description: Bad Request, syntax error, eg. missing request body
+        "422":
+          description: Unprocessable Entity, semantic error, eg. height is negative
+  /desk/speed:
+    get:
+      tags:
+        - desk
+      summary: Get the current speed of the desk
+      description: Get the current speed of the desk
+      operationId: get_desk_speed
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/DeskSpeed"
+components:
+  schemas:
+    DeskHeight:
+      type: integer
+      description: Height of the desk in mm
+      format: int32
+      examples: [640]
+      minimum: 0
+    DeskSpeed:
+      type: integer
+      description: Speed of the desk in mm/s
+      format: int32
+      examples: [0, -30, 30]
+      readOnly: true
+    Desk:
+      type: object
+      properties:
+        height:
+          $ref: "#/components/schemas/DeskHeight"
+        speed:
+          $ref: "#/components/schemas/DeskSpeed"

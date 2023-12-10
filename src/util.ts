@@ -108,12 +108,9 @@ export function makeIter<T>() {
 
 export class Height {
     private _value: number;
-    private config:Config;
 
-    constructor(height: number, config:Config,convertFromHuman: boolean = false ) {
+    constructor(height: number, private config:Config,convertFromHuman: boolean = false ) {
         debugLog(config,"Height#init enter",height,convertFromHuman);
-
-        this.config = config;
         
         if (convertFromHuman) {
             this._value = Height.heightToInternalHeight(height,config);
