@@ -38,7 +38,7 @@ export class RestApi {
                 (this.currentHnS = heightAndSpeed)
         );
 
-        Desk.watchHeightSpeed(characteristics, config); // TODO: add callback
+        Desk.watchHeightSpeed(characteristics, config, callback.bind(this));
     }
 
     private getDesk(_: Request, response: Response<DeskDTO>): void {

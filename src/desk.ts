@@ -81,15 +81,19 @@ export class Desk {
         return await ReferenceOutputService.getHeightSpeed(characteristics,config);
     }
 
-    static async watchHeightSpeed(characteristics: noble.Characteristic[],config:Config): Promise<void> {
+    static async watchHeightSpeed(characteristics: noble.Characteristic[],config:Config,callback?:(heightAndSpeed:HeightAndSpeed)=>void): Promise<void> {
         // Listen for height changes
 
-        const callback = (/*sender: any,*/ data: Buffer) => {
+        const rawCallback = ( data: Buffer) => {
             const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(data,config);
             console.log(`Height: ${heightAndSpeed.height.human.toFixed(0)}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`);
+
+            if (callback) {
+                callback(heightAndSpeed)
+            }
         };
 
-        await ReferenceOutputService.ONE.subscribe(characteristics, callback);
+        await ReferenceOutputService.ONE.subscribe(characteristics, rawCallback);
         await new Promise(() => {}); // Use a dummy promise to keep the function running
     }
 
