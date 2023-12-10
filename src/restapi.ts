@@ -1,6 +1,5 @@
 import { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
-import noble from "@abandonware/noble";
 
 import { Desk } from "./desk";
 import { Height, HeightAndSpeed, Speed, debugLog } from "./util";
@@ -17,12 +16,7 @@ export class RestApi {
         speed: new Speed(0),
     };
 
-    constructor(
-        private config: Config,
-        app: Express,
-        private characteristics: noble.Characteristic[],
-        private desk: Desk
-    ) {
+    constructor(private config: Config, app: Express, private desk: Desk) {
         const jsonParser = bodyParser.json();
         const textParser = bodyParser.text();
 

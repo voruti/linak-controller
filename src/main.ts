@@ -47,7 +47,7 @@ async function runServer(
 ): Promise<void> {
     const app: Express = express();
 
-    new RestApi(config, app, characteristics, desk);
+    new RestApi(config, app, desk);
 
     app.listen(config.serverPort, config.serverAddress, () => {
         console.log("Server listening");
