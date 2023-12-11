@@ -13,6 +13,13 @@ services:
       TZ: "Europe/Berlin"
 
       LC_MAC_ADDRESS: "ab:ab:ab:ab:ab:ab"
+      # LC_BASE_HEIGHT: 640 # default: automatically get from desk
+      # LC_SERVER_ADDRESS: "0.0.0.0" # default: "127.0.0.1"
+      # LC_SERVER_PORT: 8080 # default: 9123
+      # LC_MOVE_COMMAND_PERIOD: 0.3 # default: 0.4
+      # LC_DEBUG: "true" # default: "false"
+      # LC_WEBHOOK_PUT_HEIGHT: ""
+      # LC_WEBHOOK_PUT_HEIGHT_HEADERS: ""
 
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
