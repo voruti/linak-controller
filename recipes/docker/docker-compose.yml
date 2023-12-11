@@ -10,9 +10,14 @@ services:
     restart: always
 
     environment:
+      TZ: "Europe/Berlin"
+
       LC_MAC_ADDRESS: "ab:ab:ab:ab:ab:ab"
 
     volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+
       # remember paired bluetooth devices:
       - "./data/bluetooth/:/var/lib/bluetooth/:rw"
 
