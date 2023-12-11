@@ -1,4 +1,5 @@
 *
+!recipes/docker/healthcheck.sh
 !package-lock.json
 !package.json
 !tsconfig.json

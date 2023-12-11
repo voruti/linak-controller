@@ -13,14 +13,21 @@ FROM node:20
 
 # install required packages:
 RUN apt-get update && \
-    apt-get install -y bluez bluetooth libbluetooth-dev libudev-dev
+    apt-get install -y \
+        bluez bluetooth libbluetooth-dev libudev-dev \
+        # for healthcheck:
+        jq
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci --omit dev
 
-COPY ./recipes/docker/docker_entrypoint.sh ./
+COPY ./recipes/docker/ ./
+RUN chmod +x recipes/docker/*.sh
+
+# healthcheck:
+HEALTHCHECK CMD /app/recipes/docker/healthcheck.sh
 
 COPY --from=builder /app/dist/ ./
 
