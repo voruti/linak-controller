@@ -84,7 +84,7 @@ class Main {
 
     private async main(): Promise<void> {
         try {
-            await this.connect();
+            this.deskPeripheral = await this.connect();
             if (this.deskPeripheral) {
                 const { characteristics } =
                     await this.deskPeripheral.discoverAllServicesAndCharacteristicsAsync();
