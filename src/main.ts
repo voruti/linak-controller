@@ -78,7 +78,7 @@ class Main {
         new RestApi(this.config, app, desk);
 
         app.listen(this.config.serverPort, this.config.serverAddress, () => {
-            console.log("Server listening");
+            console.log("Server listening on port", this.config.serverPort);
         });
 
         await new Promise<void>((resolve) => {
