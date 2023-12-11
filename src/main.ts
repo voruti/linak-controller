@@ -20,7 +20,11 @@ class Main {
 
         this.deskPeripheral?.removeAllListeners();
         noble.removeAllListeners();
-        await this.deskPeripheral?.disconnectAsync();
+
+        if (plannedDisconnect) {
+            await this.deskPeripheral?.disconnectAsync();
+        }
+
         process.exit(0);
     }
 
