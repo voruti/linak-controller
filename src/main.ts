@@ -40,11 +40,7 @@ async function connect(config: Config): Promise<noble.Peripheral> {
     });
 }
 
-async function runServer(
-    config: Config,
-    characteristics: noble.Characteristic[],
-    desk: Desk
-): Promise<void> {
+async function runServer(config: Config, desk: Desk): Promise<void> {
     const app: Express = express();
 
     new RestApi(config, app, desk);
@@ -68,7 +64,7 @@ async function main(): Promise<void> {
 
         const desk: Desk = new Desk(characteristics, config);
         await desk.initialize();
-        await runServer(config, characteristics, desk);
+        await runServer(config, desk);
 
         // ---- in theory this line is never crossed ----
 
