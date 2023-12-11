@@ -11,17 +11,13 @@ class Main {
 
     private deskPeripheral?: Peripheral;
 
-    private async disconnectCallback(
-        plannedDisconnect: boolean = false
+    private async disconnect(
+        doPeripheralDisconnect: boolean = true
     ): Promise<void> {
-        if (!plannedDisconnect) {
-            console.log("Lost connection with desk");
-        }
-
         this.deskPeripheral?.removeAllListeners();
         noble.removeAllListeners();
 
-        if (plannedDisconnect) {
+        if (doPeripheralDisconnect) {
             await this.deskPeripheral?.disconnectAsync();
         }
 
@@ -36,7 +32,7 @@ class Main {
 
         // make variables accessible:
         const config = this.config;
-        const disconnectCallback = this.disconnectCallback.bind(this);
+        const disconnect = this.disconnect.bind(this);
 
         async function stateChangeCallback(state: string) {
             debugLog(config, "state", state);
@@ -63,7 +59,11 @@ class Main {
                     console.log("Connected");
 
                     // handle loosing connection:
-                    peripheral.on("disconnect", disconnectCallback);
+                    peripheral.on("disconnect", () => {
+                        console.log("Lost connection with desk");
+
+                        disconnect(false);
+                    });
 
                     resolve(peripheral);
                 }
@@ -99,10 +99,10 @@ class Main {
 
                 // ---- in theory this line is never crossed ----
 
-                await this.disconnectCallback(true);
+                await this.disconnect(true);
             }
 
-            this.disconnectCallback(false);
+            this.disconnect(false);
         } catch (e) {
             console.error("Something unexpected happened:", e);
             process.exit(1);
