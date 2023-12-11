@@ -1,88 +1,115 @@
 import express, { Express } from "express";
-import noble from "@abandonware/noble";
+import noble, { Peripheral } from "@abandonware/noble";
 
 import { debugLog } from "./util";
 import { Desk } from "./desk";
 import { Config } from "./config";
 import { RestApi } from "./restapi";
 
-async function connect(config: Config): Promise<noble.Peripheral> {
-    console.log("Trying to connect to", config.macAddress.toUpperCase());
+class Main {
+    private readonly config: Config;
 
-    async function stateChangeCallback(state: string) {
-        debugLog(config, "state", state);
+    private deskPeripheral?: Peripheral;
 
-        if (state === "poweredOn") {
-            noble.removeListener("stateChange", stateChangeCallback);
-            await noble.startScanningAsync();
+    private async disconnectCallback(
+        plannedDisconnect: boolean = false
+    ): Promise<void> {
+        if (!plannedDisconnect) {
+            console.log("Lost connection with desk");
         }
+
+        this.deskPeripheral?.removeAllListeners();
+        noble.removeAllListeners();
+        await this.deskPeripheral?.disconnectAsync();
+        process.exit(0);
     }
-    noble.on("stateChange", stateChangeCallback);
 
-    noble.on("warning", (message: any) => {
-        console.log("typeof message:", typeof message, "- message:", message);
-    });
+    private async connect(): Promise<Peripheral> {
+        console.log(
+            "Trying to connect to",
+            this.config.macAddress.toUpperCase()
+        );
 
-    return await new Promise((resolve) => {
-        async function discoverCallback(peripheral: noble.Peripheral) {
-            debugLog(config, "peripheral", peripheral);
+        // make variables accessible:
+        const config = this.config;
+        const disconnectCallback = this.disconnectCallback.bind(this);
 
-            if (peripheral.address === config.macAddress) {
-                console.log("found mac address");
+        async function stateChangeCallback(state: string) {
+            debugLog(config, "state", state);
 
-                noble.removeListener("discover", discoverCallback);
-                await noble.stopScanningAsync();
-
-                console.log("Starting connection");
-                await peripheral.connectAsync();
-                console.log("Connected");
-
-                peripheral.on("disconnect", () => {
-                    console.log("disconnected custom");
-                });
-
-                resolve(peripheral);
+            if (state === "poweredOn") {
+                noble.removeListener("stateChange", stateChangeCallback);
+                await noble.startScanningAsync();
             }
         }
-        noble.on("discover", discoverCallback);
-    });
-}
+        noble.on("stateChange", stateChangeCallback);
 
-async function runServer(config: Config, desk: Desk): Promise<void> {
-    const app: Express = express();
+        return await new Promise((resolve) => {
+            async function discoverCallback(peripheral: Peripheral) {
+                debugLog(config, "peripheral", peripheral);
 
-    new RestApi(config, app, desk);
+                if (peripheral.address === config.macAddress) {
+                    console.log("found mac address");
 
-    app.listen(config.serverPort, config.serverAddress, () => {
-        console.log("Server listening");
-    });
+                    noble.removeListener("discover", discoverCallback);
+                    await noble.stopScanningAsync();
 
-    await new Promise<void>((resolve) => {
-        app.once("close", resolve);
-    });
-}
+                    console.log("Starting connection");
+                    await peripheral.connectAsync();
+                    console.log("Connected");
 
-async function main(): Promise<void> {
-    try {
-        const config: Config = new Config();
+                    // handle loosing connection:
+                    peripheral.on("disconnect", disconnectCallback);
 
-        const peripheral: noble.Peripheral = await connect(config);
-        const { characteristics } =
-            await peripheral.discoverAllServicesAndCharacteristicsAsync();
+                    resolve(peripheral);
+                }
+            }
+            noble.on("discover", discoverCallback);
+        });
+    }
 
-        const desk: Desk = new Desk(characteristics, config);
-        await desk.initialize();
-        await runServer(config, desk);
+    private async runServer(desk: Desk): Promise<void> {
+        const app: Express = express();
 
-        // ---- in theory this line is never crossed ----
+        new RestApi(this.config, app, desk);
 
-        await peripheral.disconnectAsync();
-        noble.removeAllListeners();
-        process.exit(0);
-    } catch (e) {
-        console.error("Something unexpected happened:", e);
-        process.exit(1);
+        app.listen(this.config.serverPort, this.config.serverAddress, () => {
+            console.log("Server listening");
+        });
+
+        await new Promise<void>((resolve) => {
+            app.once("close", resolve);
+        });
+    }
+
+    private async main(): Promise<void> {
+        try {
+            await this.connect();
+            if (this.deskPeripheral) {
+                const { characteristics } =
+                    await this.deskPeripheral.discoverAllServicesAndCharacteristicsAsync();
+
+                const desk: Desk = new Desk(characteristics, this.config);
+                await desk.initialize();
+                await this.runServer(desk);
+
+                // ---- in theory this line is never crossed ----
+
+                await this.disconnectCallback(true);
+            }
+
+            this.disconnectCallback(false);
+        } catch (e) {
+            console.error("Something unexpected happened:", e);
+            process.exit(1);
+        }
+    }
+
+    constructor() {
+        this.config = new Config();
+
+        this.main();
     }
 }
 
-main();
+new Main();
