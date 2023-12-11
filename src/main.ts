@@ -19,6 +19,10 @@ async function connect(config: Config): Promise<noble.Peripheral> {
     }
     noble.on("stateChange", stateChangeCallback);
 
+    noble.on("warning", (message: any) => {
+        console.log("typeof message:", typeof message, "- message:", message);
+    });
+
     return await new Promise((resolve) => {
         async function discoverCallback(peripheral: noble.Peripheral) {
             debugLog(config, "peripheral", peripheral);
@@ -69,6 +73,7 @@ async function main(): Promise<void> {
         // ---- in theory this line is never crossed ----
 
         await peripheral.disconnectAsync();
+        noble.removeAllListeners();
         process.exit(0);
     } catch (e) {
         console.error("Something unexpected happened:", e);
