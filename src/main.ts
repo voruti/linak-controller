@@ -1,3 +1,4 @@
+import consoleStamp from "console-stamp";
 import express, { Express } from "express";
 import noble, { Peripheral } from "@abandonware/noble";
 
@@ -88,6 +89,8 @@ class Main {
 
     private async main(): Promise<void> {
         try {
+            consoleStamp(console);
+
             this.deskPeripheral = await this.connect();
             if (this.deskPeripheral) {
                 const { characteristics } =
