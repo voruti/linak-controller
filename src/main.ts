@@ -37,6 +37,10 @@ async function connect(config: Config): Promise<noble.Peripheral> {
                 await peripheral.connectAsync();
                 console.log("Connected");
 
+                peripheral.on("disconnect", () => {
+                    console.log("disconnected custom");
+                });
+
                 resolve(peripheral);
             }
         }
