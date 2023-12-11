@@ -15,17 +15,21 @@ import { Config } from "./config";
 abstract class Characteristic {
     static uuid: string | null = null;
 
-    static async read(characteristics: NobleCharacteristic[]): Promise<Buffer> {
+    static async read(
+        config: Config,
+        characteristics: NobleCharacteristic[]
+    ): Promise<Buffer> {
         const characteristic = characteristics.filter((characteristic) =>
             uuidsMatch(characteristic.uuid, this.uuid)
         )[0];
 
         const result = await characteristic.readAsync();
-        console.log(characteristic.uuid, "did read", result);
+        debugLog(config, characteristic.uuid, "did read", result);
         return result;
     }
 
     static async write(
+        config: Config,
         characteristics: NobleCharacteristic[],
         value: Buffer
     ): Promise<void> {
@@ -33,11 +37,12 @@ abstract class Characteristic {
             uuidsMatch(characteristic.uuid, this.uuid)
         )[0];
 
-        console.log(characteristic.uuid, "write", value);
+        debugLog(config, characteristic.uuid, "write", value);
         return characteristic.writeAsync(value, true);
     }
 
     static async subscribe(
+        config: Config,
         characteristics: NobleCharacteristic[],
         callback: (data: Buffer) => void
     ): Promise<void> {
@@ -46,15 +51,16 @@ abstract class Characteristic {
         )[0];
 
         characteristic.on("data", (data: Buffer, _: boolean) => {
-            console.log(characteristic.uuid, "received data", data);
+            debugLog(config, characteristic.uuid, "received data", data);
             callback(data);
         });
 
-        console.log(characteristic.uuid, "subscribe");
+        debugLog(config, characteristic.uuid, "subscribe");
         return await characteristic.subscribeAsync();
     }
 
     static async unsubscribe(
+        config: Config,
         characteristics: NobleCharacteristic[]
     ): Promise<void> {
         const characteristic = characteristics.filter((characteristic) =>
@@ -63,7 +69,7 @@ abstract class Characteristic {
 
         characteristic.removeAllListeners("data");
 
-        console.log(characteristic.uuid, "unsubscribe");
+        debugLog(config, characteristic.uuid, "unsubscribe");
         return await characteristic.unsubscribeAsync();
     }
 }
@@ -157,7 +163,7 @@ export class ReferenceOutputService extends Service {
         characteristics: NobleCharacteristic[],
         config: Config
     ): Promise<HeightAndSpeed> {
-        const data = await this.ONE.read(characteristics);
+        const data = await this.ONE.read(config, characteristics);
         return this.decodeHeightSpeed(data, config);
     }
 }
@@ -173,10 +179,15 @@ export class ControlCommandCharacteristic extends Characteristic {
     static CMD_STOP = 255;
 
     static async writeCommand(
+        config: Config,
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<void> {
-        this.write(characteristics, Buffer.from(new Uint16Array([command, 0])));
+        this.write(
+            config,
+            characteristics,
+            Buffer.from(new Uint16Array([command, 0]))
+        );
     }
 }
 
@@ -201,18 +212,21 @@ export class DPGDPGCharacteristic extends Characteristic {
     static CMD_USER_ID = 134;
 
     static async readCommand(
+        config: Config,
         characteristics: NobleCharacteristic[],
         command: number
     ): Promise<Buffer> {
         await this.write(
+            config,
             characteristics,
             Buffer.from(new Uint8Array([127, command, 0]))
         );
         await sleep(500);
-        return await this.read(characteristics);
+        return await this.read(config, characteristics);
     }
 
     static async writeCommand(
+        config: Config,
         characteristics: NobleCharacteristic[],
         command: number,
         data: Buffer
@@ -221,7 +235,7 @@ export class DPGDPGCharacteristic extends Characteristic {
         const buffer = new Uint8Array(header.length + data.length);
         buffer.set(header);
         buffer.set(data, header.length);
-        await this.write(characteristics, Buffer.from(buffer));
+        await this.write(config, characteristics, Buffer.from(buffer));
     }
 }
 
@@ -239,21 +253,26 @@ export class DPGService extends Service {
     }
 
     static async dpgCommand(
+        config: Config,
         characteristics: NobleCharacteristic[],
         command: number,
         data?: Buffer
     ) {
         //const [iter, callback] = makeIter();
-        await this.DPG.subscribe(characteristics, () => {});
+        await this.DPG.subscribe(config, characteristics, () => {});
 
         let result: Buffer | null = null;
         if (data) {
-            await this.DPG.writeCommand(characteristics, command, data);
+            await this.DPG.writeCommand(config, characteristics, command, data);
         } else {
-            result = await this.DPG.readCommand(characteristics, command);
+            result = await this.DPG.readCommand(
+                config,
+                characteristics,
+                command
+            );
         }
 
-        await this.DPG.unsubscribe(characteristics);
+        await this.DPG.unsubscribe(config, characteristics);
         if (result && result[0] === 1) {
             return result.subarray(2);
         }

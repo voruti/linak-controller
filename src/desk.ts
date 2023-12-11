@@ -28,6 +28,7 @@ export class Desk {
         // Read capabilities
         const capabilities: Capabilities | null = Desk.decodeCapabilities(
             await DPGService.dpgCommand(
+                this.config,
                 this.characteristics,
                 DPGService.DPG.CMD_GET_CAPABILITIES
             ),
@@ -37,6 +38,7 @@ export class Desk {
 
         // Read the user id
         const userId = await DPGService.dpgCommand(
+            this.config,
             this.characteristics,
             DPGService.DPG.CMD_USER_ID
         );
@@ -47,6 +49,7 @@ export class Desk {
             userId[0] = 1;
             console.log(`Setting user ID to ${bytesToHex(userId)}`);
             await DPGService.dpgCommand(
+                this.config,
                 this.characteristics,
                 DPGService.DPG.CMD_USER_ID,
                 userId
@@ -56,6 +59,7 @@ export class Desk {
         // Check if base height should be taken from controller
         if (!this.config.baseHeight) {
             const resp = await DPGService.dpgCommand(
+                this.config,
                 this.characteristics,
                 DPGService.DPG.CMD_BASE_OFFSET
             );
@@ -73,6 +77,7 @@ export class Desk {
 
     private async wakeup(): Promise<void> {
         await ControlService.COMMAND.writeCommand(
+            this.config,
             this.characteristics,
             ControlService.COMMAND.CMD_WAKEUP
         );
@@ -103,7 +108,11 @@ export class Desk {
 
         while (true) {
             debugLog(this.config, "move_to - top of loop");
-            await ReferenceInputService.ONE.write(this.characteristics, data);
+            await ReferenceInputService.ONE.write(
+                this.config,
+                this.characteristics,
+                data
+            );
             await sleep(this.config.moveCommandPeriod * 1000);
             const heightAndSpeedUpdated =
                 await ReferenceOutputService.getHeightSpeed(
@@ -150,6 +159,7 @@ export class Desk {
         };
 
         await ReferenceOutputService.ONE.subscribe(
+            this.config,
             this.characteristics,
             rawCallback
         );
@@ -159,6 +169,7 @@ export class Desk {
     private async stop(): Promise<void> {
         try {
             await ControlService.COMMAND.writeCommand(
+                this.config,
                 this.characteristics,
                 ControlService.COMMAND.CMD_STOP
             );
