@@ -27,7 +27,7 @@ COPY ./recipes/docker/ ./
 RUN chmod +x *.sh
 
 # healthcheck:
-HEALTHCHECK CMD /app/recipes/docker/healthcheck.sh
+HEALTHCHECK CMD /app/healthcheck.sh
 
 COPY --from=builder /app/dist/ ./
 
