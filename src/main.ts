@@ -49,7 +49,7 @@ class Main {
                 debugLog(config, "peripheral", peripheral);
 
                 if (peripheral.address === config.macAddress) {
-                    console.log("found mac address");
+                    console.log("Found MAC address");
 
                     noble.removeListener("discover", discoverCallback);
                     await noble.stopScanningAsync();
