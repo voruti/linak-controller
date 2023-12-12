@@ -54,16 +54,16 @@ class Main {
                     noble.removeListener("discover", discoverCallback);
                     await noble.stopScanningAsync();
 
-                    console.log("Starting connection");
-                    await peripheral.connectAsync();
-                    console.log("Connected");
-
                     // handle loosing connection:
                     peripheral.on("disconnect", () => {
                         console.log("Lost connection with desk");
 
                         _this.disconnect(false);
                     });
+
+                    console.log("Starting connection");
+                    await peripheral.connectAsync();
+                    console.log("Connected");
 
                     resolve(peripheral);
                 }
