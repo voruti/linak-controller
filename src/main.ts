@@ -32,11 +32,10 @@ class Main {
         );
 
         // make variables accessible:
-        const config = this.config;
-        const disconnect = this.disconnect.bind(this);
+        const _this = this;
 
         async function stateChangeCallback(state: string) {
-            debugLog(config, "state", state);
+            debugLog(_this.config, "state", state);
 
             if (state === "poweredOn") {
                 noble.removeListener("stateChange", stateChangeCallback);
@@ -47,9 +46,9 @@ class Main {
 
         return await new Promise((resolve) => {
             async function discoverCallback(peripheral: Peripheral) {
-                debugLog(config, "peripheral", peripheral);
+                debugLog(_this.config, "peripheral", peripheral);
 
-                if (peripheral.address === config.macAddress) {
+                if (peripheral.address === _this.config.macAddress) {
                     console.log("Found MAC address");
 
                     noble.removeListener("discover", discoverCallback);
@@ -63,7 +62,7 @@ class Main {
                     peripheral.on("disconnect", () => {
                         console.log("Lost connection with desk");
 
-                        disconnect(false);
+                        _this.disconnect(false);
                     });
 
                     resolve(peripheral);
