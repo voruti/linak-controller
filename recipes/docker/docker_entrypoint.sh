@@ -9,5 +9,5 @@ bluetoothd &
 node main.js
 
 # prevent continuous restart loops:
-echo "Program exited, sleeping 5 minutes"
-sleep 300
+echo "Program exited, sleeping 1 minute"
+sleep 60
