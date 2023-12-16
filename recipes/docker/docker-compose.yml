@@ -9,6 +9,9 @@ services:
       dockerfile: recipes/docker/Dockerfile
     restart: always
 
+    tmpfs:
+      - "/run"
+
     environment:
       TZ: "Europe/Berlin"
 
