@@ -127,7 +127,9 @@ export class RestApi {
             return;
         }
 
-        this.desk.moveTo(new Height(targetHeightNumber, this.config, true));
+        const height = new Height(targetHeightNumber, this.config, true);
+        console.log(`Moving to height of ${height.human}mm`);
+        this.desk.moveTo(height);
 
         response.sendStatus(202);
     }
