@@ -11,7 +11,7 @@ Note: This script may not work with all Linak desks - see below for comaptible m
 ### Prerequisites
 
 - Windows / Linux / Mac (tested on a Raspberry Pi 4)
-- The desk should be paired to the device. / The original script - <https://github.com/rhyst/linak-controller>, the Python version - should be executed once using Docker, to allow the desk get paired and the correct files get added to `recipes/docker/data/bluetooth`. Alternatively it may be possible to mount the system bluetooth configuration (replace with volume of `- "/var/lib/bluetooth/:/var/lib/bluetooth/:rw"` in [docker-compose.yml](recipes/docker/docker-compose.yml)).
+- The desk should be paired to the device. It may be possible (untested) to mount the system bluetooth configuration (replace with volume of `- "/var/lib/bluetooth/:/var/lib/bluetooth/:rw"` in [docker-compose.yml](recipes/docker/docker-compose.yml)). / Alternatively: The original script - <https://github.com/rhyst/linak-controller>, the Python version - should be executed once using Docker, to allow the desk get paired and the correct files get added to `recipes/docker/data/bluetooth`.
 
 ### Working Desks
 
