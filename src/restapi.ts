@@ -126,6 +126,10 @@ export class RestApi {
             response.sendStatus(422);
             return;
         }
+        if (targetHeightNumber > this.config.maxHeight) {
+            response.sendStatus(422);
+            return;
+        }
 
         const height = new Height(targetHeightNumber, this.config, true);
         console.log(`Moving to height of ${height.human}mm`);

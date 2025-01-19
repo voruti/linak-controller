@@ -4,6 +4,7 @@ export class Config {
     // Config
     macAddress: string = "";
     baseHeight: number = 0;
+    maxHeight: number = 0;
     adapterName: string = "hci0";
     scanTimeout: number = 5;
     connectionTimeout: number = 10;
@@ -42,6 +43,9 @@ export class Config {
         this.baseHeight = process.env.LC_BASE_HEIGHT
             ? parseInt(process.env.LC_BASE_HEIGHT)
             : this.baseHeight;
+        this.maxHeight = process.env.LC_MAX_HEIGHT
+            ? parseInt(process.env.LC_MAX_HEIGHT)
+            : this.maxHeight;
         this.adapterName = process.env.LC_ADAPTER_NAME || this.adapterName;
         this.scanTimeout = process.env.LC_SCAN_TIMEOUT
             ? parseInt(process.env.LC_SCAN_TIMEOUT)

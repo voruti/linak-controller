@@ -73,6 +73,9 @@ export class Desk {
                 this.config.baseHeight = baseHeight;
             }
         }
+        if (!this.config.maxHeight) {
+            this.config.maxHeight = this.config.baseHeight + 10;
+        }
     }
 
     private async wakeup(): Promise<void> {
