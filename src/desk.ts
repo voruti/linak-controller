@@ -151,7 +151,7 @@ export class Desk {
         );
         await sleep(this.config.moveCommandPeriod * 1000);
 
-        await sleep(3000);
+        await sleep(2000);
     }
 
     public async getHeightSpeed(): Promise<HeightAndSpeed> {
