@@ -104,6 +104,11 @@ export class Desk {
         await this.stop();
         debugLog(this.config, "move_to - done stop");
 
+        if (target.value < heightAndSpeed.height.value) {
+            // first move up - prevents desk getting stuck:
+            await this.stepUpwards();
+        }
+
         const thevalue = target.value;
         debugLog(this.config, "move_to - thevalue is", thevalue);
         const data = ReferenceInputService.encodeHeight(thevalue);
@@ -131,6 +136,22 @@ export class Desk {
                 )}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`
             );
         }
+    }
+
+    public async stepUpwards(): Promise<void> {
+        const data = ReferenceInputService.encodeHeight(
+            new Height(this.config.maxHeight, this.config, true).value
+        );
+        debugLog(this.config, "stepUpwards - target data is", data);
+
+        await ReferenceInputService.ONE.write(
+            this.config,
+            this.characteristics,
+            data
+        );
+        await sleep(this.config.moveCommandPeriod * 1000);
+
+        await sleep(3000);
     }
 
     public async getHeightSpeed(): Promise<HeightAndSpeed> {
