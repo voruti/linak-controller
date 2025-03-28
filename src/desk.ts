@@ -98,6 +98,10 @@ export class Desk {
         if (heightAndSpeed.height.value === target.value) {
             return;
         }
+        if (target.value < heightAndSpeed.height.value) {
+            debugLog(this.config, "move_to - aborting moving down");
+            return;
+        }
 
         await this.wakeup();
         debugLog(this.config, "move_to - done wakeup");
