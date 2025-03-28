@@ -93,11 +93,11 @@ export class Desk {
             this.characteristics,
             this.config
         );
+        debugLog(this.config, "move_to - got initial height");
+
         if (heightAndSpeed.height.value === target.value) {
             return;
         }
-
-        debugLog(this.config, "move_to - got initial height");
 
         await this.wakeup();
         debugLog(this.config, "move_to - done wakeup");
