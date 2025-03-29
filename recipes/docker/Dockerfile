@@ -1,4 +1,4 @@
-FROM node:20 AS builder
+FROM node:20@sha256:735b1ba7e4550c415f98568efbf527e3f75828ac4f10692e490ca78e11d89f6e AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY ./ ./
 RUN npm run build
 
 
-FROM node:20
+FROM node:20@sha256:735b1ba7e4550c415f98568efbf527e3f75828ac4f10692e490ca78e11d89f6e
 
 # install required packages:
 RUN apt-get update && \
