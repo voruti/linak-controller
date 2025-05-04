@@ -1,5 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "description": "See all configuration options at https://docs.renovatebot.com/configuration-options/.",
+  "extends": ["config:best-practices", ":pinVersions"],
+  "osvVulnerabilityAlerts": true,
   "baseBranches": ["master", "typescript-rewrite"]
 }
