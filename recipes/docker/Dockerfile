@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10@sha256:546aebf016bc6fcdfc8a2bcc052bd8dc6e34703e5c3edc811ce6fb3961a88c22
 
 WORKDIR /app
 # allows Python's output to be seen in the log:
