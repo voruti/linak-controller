@@ -9,7 +9,7 @@ import {
 } from "./util";
 import { Config } from "./config";
 
-describe("utli test", () => {
+describe("util test", () => {
     describe("functions", () => {
         test("bytesToHex and hexToBytes", () => {
             const originalBytes = new Uint8Array([65, 66, 67, 68]);
