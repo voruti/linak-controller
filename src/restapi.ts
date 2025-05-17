@@ -20,7 +20,7 @@ export class RestApi {
         speed: new Speed(0),
     };
 
-    constructor(private config: Config, app: Express, private desk: Desk) {
+    constructor(private readonly config: Config, app: Express, private readonly desk: Desk) {
         const jsonParser = bodyParser.json();
         const textParser = bodyParser.text();
 

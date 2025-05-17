@@ -66,7 +66,7 @@ export function debugLog(config: Config, ...args: any[]): void {
 }
 
 class AsyncQueue<T> {
-    private queue: Array<{
+    private readonly queue: Array<{
         resolve: (value: T) => void;
         reject: (error: any) => void;
     }> = [];
@@ -126,7 +126,7 @@ abstract class Value {
 export class Height extends Value {
     constructor(
         height: number,
-        private config: Config,
+        private readonly config: Config,
         convertFromHuman: boolean = false
     ) {
         debugLog(config, "Height#init enter", height, convertFromHuman);

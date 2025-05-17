@@ -20,8 +20,8 @@ interface Capabilities {
 
 export class Desk {
     constructor(
-        private characteristics: noble.Characteristic[],
-        private config: Config
+        private readonly characteristics: noble.Characteristic[],
+        private readonly config: Config
     ) {}
 
     public async initialize(): Promise<void> {

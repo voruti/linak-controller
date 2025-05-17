@@ -39,14 +39,14 @@ export class Config {
 
     private loadFromEnv() {
         // Load values from environment variables, if available
-        this.macAddress = process.env.LC_MAC_ADDRESS || this.macAddress;
+        this.macAddress = process.env.LC_MAC_ADDRESS ?? this.macAddress;
         this.baseHeight = process.env.LC_BASE_HEIGHT
             ? parseInt(process.env.LC_BASE_HEIGHT)
             : this.baseHeight;
         this.maxHeight = process.env.LC_MAX_HEIGHT
             ? parseInt(process.env.LC_MAX_HEIGHT)
             : this.maxHeight;
-        this.adapterName = process.env.LC_ADAPTER_NAME || this.adapterName;
+        this.adapterName = process.env.LC_ADAPTER_NAME ?? this.adapterName;
         this.scanTimeout = process.env.LC_SCAN_TIMEOUT
             ? parseInt(process.env.LC_SCAN_TIMEOUT)
             : this.scanTimeout;
@@ -54,7 +54,7 @@ export class Config {
             ? parseInt(process.env.LC_CONNECTION_TIMEOUT)
             : this.connectionTimeout;
         this.serverAddress =
-            process.env.LC_SERVER_ADDRESS || this.serverAddress;
+            process.env.LC_SERVER_ADDRESS ?? this.serverAddress;
         this.serverPort = process.env.LC_SERVER_PORT
             ? parseInt(process.env.LC_SERVER_PORT)
             : this.serverPort;
