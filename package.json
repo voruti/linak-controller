@@ -22,7 +22,7 @@
   "dependencies": {
     "@abandonware/noble": "1.9.2-23",
     "console-stamp": "3.1.2",
-    "express": "4.20.0"
+    "express": "4.21.2"
   },
   "devDependencies": {
     "@babel/preset-env": "7.27.2",
