@@ -1,0 +1,18 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "typescript-rewrite" ]
+  pull_request:
+    branches: [ "typescript-rewrite" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file recipes/docker/Dockerfile --tag linak-controller:$(date +%s)
