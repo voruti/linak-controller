@@ -25,10 +25,10 @@ COPY package*.json ./
 RUN npm ci --omit dev
 
 COPY ./recipes/docker/ ./
-RUN chmod +x *.sh
+RUN chmod +x ./*.sh
 
 # healthcheck:
-HEALTHCHECK CMD /app/healthcheck.sh
+HEALTHCHECK CMD ["/app/healthcheck.sh"]
 
 COPY --from=builder /app/dist/ ./
 
