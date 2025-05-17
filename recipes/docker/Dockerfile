@@ -14,9 +14,10 @@ FROM node:20.19.2@sha256:34ebf3e5d4a51d4b1af4b78188f9b0ad0daf1d763395e2390ab935f
 # install required packages:
 RUN apt-get update && \
     apt-get install -y \
-        bluez bluetooth libbluetooth-dev libudev-dev \
+        bluetooth bluez libbluetooth-dev libudev-dev \
         # for healthcheck:
-        jq
+        jq \
+    && apt-get clean
 
 WORKDIR /app
 
