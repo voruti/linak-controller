@@ -67,6 +67,7 @@ export class Config {
               )
             : this.debug;
         this.webhookPutHeight = process.env.LC_WEBHOOK_PUT_HEIGHT;
-        this.webhookPutHeightHeaders = process.env.LC_WEBHOOK_PUT_HEIGHT_HEADERS;
+        this.webhookPutHeightHeaders =
+            process.env.LC_WEBHOOK_PUT_HEIGHT_HEADERS;
     }
 }

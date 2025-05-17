@@ -1,13 +1,14 @@
 import { describe, expect, test } from "@jest/globals";
+
+import { Config } from "./config";
 import {
     bytesToHex,
-    hexToBytes,
     bytesToInt,
     bytesToUtf8,
     Height,
+    hexToBytes,
     Speed,
 } from "./util";
-import { Config } from "./config";
 
 describe("util test", () => {
     describe("functions", () => {

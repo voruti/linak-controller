@@ -1,11 +1,11 @@
-import { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
+import type { Express, Request, Response } from "express";
 import https from "https";
 
-import { Desk } from "./desk";
-import { Height, HeightAndSpeed, Speed, debugLog } from "./util";
 import { Config } from "./config";
 import { debounce } from "./debouncer";
+import type { Desk } from "./desk";
+import { Height, Speed, debugLog, type HeightAndSpeed } from "./util";
 
 export interface DeskDTO {
     height: number;
@@ -20,7 +20,11 @@ export class RestApi {
         speed: new Speed(0),
     };
 
-    constructor(private readonly config: Config, app: Express, private readonly desk: Desk) {
+    constructor(
+        private readonly config: Config,
+        app: Express,
+        private readonly desk: Desk
+    ) {
         const jsonParser = bodyParser.json();
         const textParser = bodyParser.text();
 

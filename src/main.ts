@@ -1,11 +1,11 @@
+import noble, { type Peripheral } from "@abandonware/noble";
 import consoleStamp from "console-stamp";
-import express, { Express } from "express";
-import noble, { Peripheral } from "@abandonware/noble";
+import express, { type Express } from "express";
 
-import { debugLog } from "./util";
-import { Desk } from "./desk";
 import { Config } from "./config";
+import { Desk } from "./desk";
 import { RestApi } from "./restapi";
+import { debugLog } from "./util";
 
 class Main {
     private readonly config: Config;

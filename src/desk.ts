@@ -2,12 +2,20 @@
 
 import noble from "@abandonware/noble";
 
-import { DPGService } from "./gatt";
-import { ControlService } from "./gatt";
-import { ReferenceInputService } from "./gatt";
-import { ReferenceOutputService } from "./gatt";
-import { bytesToHex, debugLog, Height, HeightAndSpeed, sleep } from "./util";
-import { Config } from "./config";
+import type { Config } from "./config";
+import {
+    ControlService,
+    DPGService,
+    ReferenceInputService,
+    ReferenceOutputService,
+} from "./gatt";
+import {
+    bytesToHex,
+    debugLog,
+    Height,
+    sleep,
+    type HeightAndSpeed,
+} from "./util";
 
 interface Capabilities {
     memSize: number;

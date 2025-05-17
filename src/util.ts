@@ -1,6 +1,6 @@
 // Random helpers and util.
 
-import { Config } from "./config";
+import type { Config } from "./config";
 
 export function bytesToHex(
     bytes?: Uint8Array | null

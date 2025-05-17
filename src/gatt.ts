@@ -1,16 +1,16 @@
 // Low level helper classes to organise methods for interacting with the GATT services/characteristics provided by Linak Desks.
 
-import { Characteristic as NobleCharacteristic } from "@abandonware/noble";
+import type { Characteristic as NobleCharacteristic } from "@abandonware/noble";
 
+import type { Config } from "./config";
 import {
-    uuidsMatch,
-    sleep,
     Height,
+    type HeightAndSpeed,
     Speed,
-    HeightAndSpeed,
     debugLog,
+    sleep,
+    uuidsMatch,
 } from "./util";
-import { Config } from "./config";
 
 abstract class Characteristic {
     static uuid: string | null = null;
