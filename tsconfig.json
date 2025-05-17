@@ -24,9 +24,5 @@
     "sourceMap": true
   },
   "include": ["./src/**/*"],
-  "exclude": [],
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
-  }
+  "exclude": []
 }

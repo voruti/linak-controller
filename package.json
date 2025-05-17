@@ -4,7 +4,7 @@
   "description": "Command line tool for controlling the Linak standing desks",
   "main": "dist/main.js",
   "scripts": {
-    "clean": "rm -r dist/",
+    "clean": "rm -rv ./dist/ ./coverage/ || true",
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "jest",
@@ -26,9 +26,6 @@
     "express": "4.21.2"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.27.2",
-    "@babel/preset-typescript": "7.27.1",
-    "@jest/globals": "29.7.0",
     "@types/express": "4.17.22",
     "@types/jest": "29.5.14",
     "@types/node": "22.15.18",
