@@ -88,8 +88,7 @@ class Main {
 
     private async main(): Promise<void> {
         try {
-            consoleStamp(console);
-
+            debugLog(this.config, "Starting connect");
             this.deskPeripheral = await this.connect();
             if (this.deskPeripheral) {
                 const { characteristics } =
@@ -113,6 +112,10 @@ class Main {
 
     constructor() {
         this.config = new Config();
+
+        consoleStamp(console);
+
+        debugLog(this.config, "debug logging enabled");
 
         this.main();
     }
