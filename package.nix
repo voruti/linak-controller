@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 let
+  inherit (pkgs) lib;
+
   pname = "linak-controller";
   version = "2.0.0";
 
@@ -16,7 +18,17 @@ pkgs.writeShellApplication {
     pkgs.buildNpmPackage {
       inherit pname version nodejs;
 
-      src = ./.; # possible TODO: clean / only include required files
+      src = lib.sources.cleanSourceWith {
+        src = lib.sources.cleanSource ./.;
+        filter =
+          name: _type:
+          (builtins.any (x: x) [
+            ((builtins.match ".*/src.*" name) == [ ])
+            (lib.hasSuffix "/package-lock.json" name)
+            (lib.hasSuffix "/package.json" name)
+            (lib.hasSuffix "/tsconfig.json" name)
+          ]);
+      };
 
       npmDepsHash = "sha256-SOzbJzczGwfQuFYMaJWk8Lg5u9Fwrbqfb13kYqC9YaU=";
     }
