@@ -18,11 +18,7 @@ pkgs.writeShellApplication {
 
       src = ./.; # possible TODO: clean / only include required files
 
-      npmDeps = pkgs.importNpmLock {
-        npmRoot = ./.;
-      };
-
-      npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+      npmDepsHash = "sha256-SOzbJzczGwfQuFYMaJWk8Lg5u9Fwrbqfb13kYqC9YaU=";
     }
   }/lib/node_modules/linak-controller/dist/main.js";
 }
