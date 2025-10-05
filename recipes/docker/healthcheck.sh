@@ -3,12 +3,12 @@
 response=$(curl -s -S "http://localhost:9123/rest/desk")
 
 # ensure "height" field exists:
-if [ -z "$(echo $response | jq -e '.height')" ]; then
+if [ -z "$(echo "$response" | jq -e '.height')" ]; then
   exit 1
 fi
 
 # ensure height is number:
-heightString=$(echo $response | jq -r '.height')
+heightString=$(echo "$response" | jq -r '.height')
 if ! [[ $heightString =~ ^[0-9]+\.?[0-9]*$ ]]; then
   exit 1
 fi
