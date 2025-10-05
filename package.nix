@@ -8,7 +8,7 @@ let
 in
 
 pkgs.writeShellApplication {
-  name = pname;
+  name = "${pname}-bin-${version}";
 
   runtimeInputs = [ nodejs ];
 
