@@ -16,7 +16,7 @@ pkgs.writeShellApplication {
     pkgs.buildNpmPackage {
       inherit pname version nodejs;
 
-      src = ./.;
+      src = ./.; # possible TODO: clean / only include required files
 
       npmDeps = pkgs.importNpmLock {
         npmRoot = ./.;
