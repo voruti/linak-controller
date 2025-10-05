@@ -1,4 +1,4 @@
-name: Build package
+name: Nix flake CI
 
 on:
   push:
