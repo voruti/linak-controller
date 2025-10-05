@@ -1,16 +1,28 @@
 { pkgs, ... }:
 
-pkgs.buildNpmPackage {
+let
   pname = "linak-controller";
   version = "2.0.0";
 
   nodejs = pkgs.nodejs_22;
+in
 
-  src = ./.;
+pkgs.writeShellApplication {
+  name = pname;
 
-  npmDeps = pkgs.importNpmLock {
-    npmRoot = ./.;
-  };
+  runtimeInputs = [ nodejs ];
 
-  npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+  text = "node ${
+    pkgs.buildNpmPackage {
+      inherit pname version nodejs;
+
+      src = ./.;
+
+      npmDeps = pkgs.importNpmLock {
+        npmRoot = ./.;
+      };
+
+      npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+    }
+  }/lib/node_modules/linak-controller/dist/main.js";
 }
