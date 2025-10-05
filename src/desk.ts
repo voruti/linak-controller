@@ -29,7 +29,7 @@ interface Capabilities {
 export class Desk {
   constructor(
     private readonly characteristics: noble.Characteristic[],
-    private readonly config: Config,
+    private readonly config: Config
   ) {}
 
   public async initialize(): Promise<void> {
@@ -38,9 +38,9 @@ export class Desk {
       await DPGService.dpgCommand(
         this.config,
         this.characteristics,
-        DPGService.DPG.CMD_GET_CAPABILITIES,
+        DPGService.DPG.CMD_GET_CAPABILITIES
       ),
-      this.config,
+      this.config
     );
     console.log(`Capabilities: ${JSON.stringify(capabilities)}`);
 
@@ -48,7 +48,7 @@ export class Desk {
     const userId = await DPGService.dpgCommand(
       this.config,
       this.characteristics,
-      DPGService.DPG.CMD_USER_ID,
+      DPGService.DPG.CMD_USER_ID
     );
     console.log(`User ID: ${bytesToHex(userId)}`);
     if (userId && userId[0] !== 1) {
@@ -60,7 +60,7 @@ export class Desk {
         this.config,
         this.characteristics,
         DPGService.DPG.CMD_USER_ID,
-        userId,
+        userId
       );
     }
 
@@ -69,7 +69,7 @@ export class Desk {
       const resp = await DPGService.dpgCommand(
         this.config,
         this.characteristics,
-        DPGService.DPG.CMD_BASE_OFFSET,
+        DPGService.DPG.CMD_BASE_OFFSET
       );
       debugLog(this.config, "baseHeight resp:", resp);
       if (resp) {
@@ -88,7 +88,7 @@ export class Desk {
     await ControlService.COMMAND.writeCommand(
       this.config,
       this.characteristics,
-      ControlService.COMMAND.CMD_WAKEUP,
+      ControlService.COMMAND.CMD_WAKEUP
     );
   }
 
@@ -97,7 +97,7 @@ export class Desk {
 
     const heightAndSpeed = await ReferenceOutputService.getHeightSpeed(
       this.characteristics,
-      this.config,
+      this.config
     );
     debugLog(this.config, "move_to - got initial height");
 
@@ -125,34 +125,34 @@ export class Desk {
       await ReferenceInputService.ONE.write(
         this.config,
         this.characteristics,
-        data,
+        data
       );
       await sleep(this.config.moveCommandPeriod * 1000);
       const heightAndSpeedUpdated = await ReferenceOutputService.getHeightSpeed(
         this.characteristics,
-        this.config,
+        this.config
       );
       if (heightAndSpeedUpdated.speed.value === 0) {
         break;
       }
       console.log(
         `Height: ${heightAndSpeedUpdated.height.human.toFixed(
-          0,
-        )}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`,
+          0
+        )}mm Speed: ${heightAndSpeedUpdated.speed.human.toFixed(0)}mm/s`
       );
     }
   }
 
   public async stepUpwards(): Promise<void> {
     const data = ReferenceInputService.encodeHeight(
-      new Height(this.config.maxHeight, this.config, true).value,
+      new Height(this.config.maxHeight, this.config, true).value
     );
     debugLog(this.config, "stepUpwards - target data is", data);
 
     await ReferenceInputService.ONE.write(
       this.config,
       this.characteristics,
-      data,
+      data
     );
     await sleep(this.config.moveCommandPeriod * 1000);
 
@@ -162,24 +162,24 @@ export class Desk {
   public async getHeightSpeed(): Promise<HeightAndSpeed> {
     return await ReferenceOutputService.getHeightSpeed(
       this.characteristics,
-      this.config,
+      this.config
     );
   }
 
   public async watchHeightSpeed(
-    callback?: (heightAndSpeed: HeightAndSpeed) => void,
+    callback?: (heightAndSpeed: HeightAndSpeed) => void
   ): Promise<void> {
     // Listen for height changes
 
     const rawCallback = (data: Buffer) => {
       const heightAndSpeed = ReferenceOutputService.decodeHeightSpeed(
         data,
-        this.config,
+        this.config
       );
       console.log(
         `Height: ${heightAndSpeed.height.human.toFixed(
-          0,
-        )}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`,
+          0
+        )}mm Speed: ${heightAndSpeed.speed.human.toFixed(0)}mm/s`
       );
 
       if (callback) {
@@ -190,7 +190,7 @@ export class Desk {
     await ReferenceOutputService.ONE.subscribe(
       this.config,
       this.characteristics,
-      rawCallback,
+      rawCallback
     );
     await new Promise(() => {}); // Use a dummy promise to keep the function running
   }
@@ -200,7 +200,7 @@ export class Desk {
       await ControlService.COMMAND.writeCommand(
         this.config,
         this.characteristics,
-        ControlService.COMMAND.CMD_STOP,
+        ControlService.COMMAND.CMD_STOP
       );
     } catch (e) {
       console.error("todo handle", e);
@@ -214,7 +214,7 @@ export class Desk {
 
   private static decodeCapabilities(
     caps: Buffer | null,
-    config: Config,
+    config: Config
   ): Capabilities | null {
     if (!caps || caps.length < 2) {
       return null;

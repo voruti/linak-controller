@@ -4,12 +4,12 @@ const debounceRunsMap = new Map<string, string>();
 
 export async function debounce(
   identifier: string,
-  timeoutMs: number,
+  timeoutMs: number
 ): Promise<boolean> {
   const thisRun: string = Math.random().toString(36).substring(2, 9);
   debounceRunsMap.set(identifier, thisRun);
 
   return setTimeout(timeoutMs).then(
-    () => debounceRunsMap.get(identifier) === thisRun,
+    () => debounceRunsMap.get(identifier) === thisRun
   );
 }

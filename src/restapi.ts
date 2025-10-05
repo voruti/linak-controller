@@ -23,7 +23,7 @@ export class RestApi {
   constructor(
     private readonly config: Config,
     app: Express,
-    private readonly desk: Desk,
+    private readonly desk: Desk
   ) {
     const jsonParser = bodyParser.json();
     const textParser = bodyParser.text();
@@ -66,7 +66,7 @@ export class RestApi {
     desk
       .getHeightSpeed()
       .then(
-        (heightAndSpeed: HeightAndSpeed) => (this.currentHnS = heightAndSpeed),
+        (heightAndSpeed: HeightAndSpeed) => (this.currentHnS = heightAndSpeed)
       );
 
     desk.watchHeightSpeed(callback.bind(this));
@@ -109,7 +109,7 @@ export class RestApi {
 
   private commonPostHeight(
     targetHeight: number | string,
-    response: Response,
+    response: Response
   ): void {
     let targetHeightNumber: number;
     try {

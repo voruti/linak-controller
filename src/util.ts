@@ -3,7 +3,7 @@
 import type { Config } from "./config";
 
 export function bytesToHex(
-  bytes?: Uint8Array | null,
+  bytes?: Uint8Array | null
 ): string | undefined | null {
   if (bytes === undefined || bytes === null) {
     return bytes;
@@ -40,7 +40,7 @@ export function bytesToUtf8(bytes: Uint8Array): string {
 
 export function uuidsMatch(
   uuid1?: string | null,
-  uuid2?: string | null,
+  uuid2?: string | null
 ): boolean {
   return (
     uuid1?.toLowerCase()?.replaceAll("-", "") ===
@@ -124,7 +124,7 @@ export class Height extends Value {
   constructor(
     height: number,
     private readonly config: Config,
-    convertFromHuman: boolean = false,
+    convertFromHuman: boolean = false
   ) {
     debugLog(config, "Height#init enter", height, convertFromHuman);
     super(convertFromHuman ? (height - config.baseHeight) * 10 : height);

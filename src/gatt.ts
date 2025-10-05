@@ -17,10 +17,10 @@ abstract class Characteristic {
 
   static async read(
     config: Config,
-    characteristics: NobleCharacteristic[],
+    characteristics: NobleCharacteristic[]
   ): Promise<Buffer> {
     const characteristic = characteristics.filter((characteristic) =>
-      uuidsMatch(characteristic.uuid, this.uuid),
+      uuidsMatch(characteristic.uuid, this.uuid)
     )[0];
 
     const result = await characteristic.readAsync();
@@ -31,10 +31,10 @@ abstract class Characteristic {
   static async write(
     config: Config,
     characteristics: NobleCharacteristic[],
-    value: Buffer,
+    value: Buffer
   ): Promise<void> {
     const characteristic = characteristics.filter((characteristic) =>
-      uuidsMatch(characteristic.uuid, this.uuid),
+      uuidsMatch(characteristic.uuid, this.uuid)
     )[0];
 
     debugLog(config, characteristic.uuid, "write", value);
@@ -44,10 +44,10 @@ abstract class Characteristic {
   static async subscribe(
     config: Config,
     characteristics: NobleCharacteristic[],
-    callback: (data: Buffer) => void,
+    callback: (data: Buffer) => void
   ): Promise<void> {
     const characteristic = characteristics.filter((characteristic) =>
-      uuidsMatch(characteristic.uuid, this.uuid),
+      uuidsMatch(characteristic.uuid, this.uuid)
     )[0];
 
     characteristic.on("data", (data: Buffer, _: boolean) => {
@@ -61,10 +61,10 @@ abstract class Characteristic {
 
   static async unsubscribe(
     config: Config,
-    characteristics: NobleCharacteristic[],
+    characteristics: NobleCharacteristic[]
   ): Promise<void> {
     const characteristic = characteristics.filter((characteristic) =>
-      uuidsMatch(characteristic.uuid, this.uuid),
+      uuidsMatch(characteristic.uuid, this.uuid)
     )[0];
 
     characteristic.removeAllListeners("data");
@@ -159,7 +159,7 @@ export class ReferenceOutputService extends Service {
 
   static async getHeightSpeed(
     characteristics: NobleCharacteristic[],
-    config: Config,
+    config: Config
   ): Promise<HeightAndSpeed> {
     const data = await this.ONE.read(config, characteristics);
     return this.decodeHeightSpeed(data, config);
@@ -179,12 +179,12 @@ export class ControlCommandCharacteristic extends Characteristic {
   static async writeCommand(
     config: Config,
     characteristics: NobleCharacteristic[],
-    command: number,
+    command: number
   ): Promise<void> {
     this.write(
       config,
       characteristics,
-      Buffer.from(new Uint16Array([command, 0])),
+      Buffer.from(new Uint16Array([command, 0]))
     );
   }
 }
@@ -212,12 +212,12 @@ export class DPGDPGCharacteristic extends Characteristic {
   static async readCommand(
     config: Config,
     characteristics: NobleCharacteristic[],
-    command: number,
+    command: number
   ): Promise<Buffer> {
     await this.write(
       config,
       characteristics,
-      Buffer.from(new Uint8Array([127, command, 0])),
+      Buffer.from(new Uint8Array([127, command, 0]))
     );
     await sleep(500);
     return await this.read(config, characteristics);
@@ -227,7 +227,7 @@ export class DPGDPGCharacteristic extends Characteristic {
     config: Config,
     characteristics: NobleCharacteristic[],
     command: number,
-    data: Buffer,
+    data: Buffer
   ): Promise<void> {
     const header = new Uint8Array([127, command, 128]);
     const buffer = new Uint8Array(header.length + data.length);
@@ -254,7 +254,7 @@ export class DPGService extends Service {
     config: Config,
     characteristics: NobleCharacteristic[],
     command: number,
-    data?: Buffer,
+    data?: Buffer
   ) {
     //const [iter, callback] = makeIter();
     await this.DPG.subscribe(config, characteristics, () => {});

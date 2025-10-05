@@ -13,7 +13,7 @@ class Main {
   private deskPeripheral?: Peripheral;
 
   private async disconnect(
-    doPeripheralDisconnect: boolean = true,
+    doPeripheralDisconnect: boolean = true
   ): Promise<void> {
     this.deskPeripheral?.removeAllListeners();
     noble.removeAllListeners();

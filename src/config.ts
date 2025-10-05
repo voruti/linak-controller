@@ -62,7 +62,7 @@ export class Config {
       : this.moveCommandPeriod;
     this.debug = process.env.LC_DEBUG
       ? !["0", "false", "no", "wrong"].includes(
-          process.env.LC_DEBUG.trim().toLowerCase(),
+          process.env.LC_DEBUG.trim().toLowerCase()
         )
       : this.debug;
     this.webhookPutHeight = process.env.LC_WEBHOOK_PUT_HEIGHT;
