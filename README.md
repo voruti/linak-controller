@@ -37,13 +37,13 @@ Adjust the [docker-compose.yml](recipes/docker/docker-compose.yml) file to your 
 
 Config options:
 
-| Option                | Description                                                                                           | Default                     |
-| --------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------- |
-| `mac_address`         | The MAC address (or UUID on MacOS) of the desk. This is required.                                     |                             |
-| `base_height`         | The lowest possible height (mm) of the desk top from the floor By default this is read from the desk. | `null`.                     |
-| `move_command_period` | Time between move commands when using `move-to` (seconds).                                            | `0.4`                       |
-| `server_address`      | The address the server should run at (if running server).                                             | `127.0.0.1`                 |
-| `server_port`         | The port the server should run on (if running server).                                                | `9123`                      |
+| Option                | Description                                                                                           | Default     |
+| --------------------- | ----------------------------------------------------------------------------------------------------- | ----------- |
+| `mac_address`         | The MAC address (or UUID on MacOS) of the desk. This is required.                                     |             |
+| `base_height`         | The lowest possible height (mm) of the desk top from the floor By default this is read from the desk. | `null`.     |
+| `move_command_period` | Time between move commands when using `move-to` (seconds).                                            | `0.4`       |
+| `server_address`      | The address the server should run at (if running server).                                             | `127.0.0.1` |
+| `server_port`         | The port the server should run on (if running server).                                                | `9123`      |
 
 #### Device MAC addresses
 

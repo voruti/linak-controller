@@ -44,7 +44,6 @@ Get into different body positions regularly, the next position is the best!
 
    For example installed with Homebrew `/opt/homebrew/bin/linak-controller`
 
-
 2. Edit crontab
 
    ```
@@ -59,7 +58,7 @@ Get into different body positions regularly, the next position is the best!
    50 6-18/2 * * 1-5 <path>/linak-controller --move-to stand >/dev/null 2>&1
    10 7-18/2 * * 1-5 <path>/linak-controller --move-to sit >/dev/null 2>&1
    30 7-18/2 * * 1-5 <path>/linak-controller --move-to stand >/dev/null 2>&1
-   45 7-18/2 * * 1-5 <path>/linak-controller --move-to sit >/dev/null 2>&1 
+   45 7-18/2 * * 1-5 <path>/linak-controller --move-to sit >/dev/null 2>&1
    ```
 
    This cronjob runs between 6am and 6pm, for example:
@@ -68,7 +67,7 @@ Get into different body positions regularly, the next position is the best!
 
    Note: Long-lasting constant body positions should be avoided. This applies to sitting and(!) standing.
 
-4. Add `linak-controller` and `cron` in macOS *System Preferences* → *Security* → *Bluetooth*
+4. Add `linak-controller` and `cron` in macOS _System Preferences_ → _Security_ → _Bluetooth_
 
    Without this important step `linak-controller` will not move the desk because Bluetooth permissions are missing.
 
@@ -80,7 +79,7 @@ Get into different body positions regularly, the next position is the best!
    crontab -l
    ```
 
-Successfully tested with macOS 12.5, iTerm2 3.4.16, 
+Successfully tested with macOS 12.5, iTerm2 3.4.16,
 
 ## Windows
 

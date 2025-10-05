@@ -20,15 +20,14 @@ echo '{"key": "move_to", "value": 640}' | nc -w 1 127.0.0.1 9123
 
 - Refactor global config and command to fix [100](https://github.com/rhyst/linak-controller/issues/100) and [85](https://github.com/rhyst/linak-controller/issues/85)
 
-### Fixed 
+### Fixed
 
 - Server port argument [99](https://github.com/rhyst/linak-controller/pull/99) by @gomi-source
 - Allow using FIFO as config file [101](https://github.com/rhyst/linak-controller/pull/101) by @jayrhynas
 
-
 ## [1.2.0] - 2024-12-03
 
-### Added 
+### Added
 
 - Added http endpoint in addition to web socket endpoint in server mode
 
@@ -120,7 +119,6 @@ Final release of `idasen-controller` to point at renamed packaged `linak-control
 - Update bleak dependency to 0.19.5
 - Use poetry for dependency management
 - Removed old options from RECIPES.md
-
 
 ## [2.0.1] - 2022-07-27
 
