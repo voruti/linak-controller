@@ -88,6 +88,10 @@ class Main {
       debugLog(this.config, "Starting connect");
       this.deskPeripheral = await this.connect();
       if (this.deskPeripheral) {
+        debugLog(
+          this.config,
+          "Trying to discoverAllServicesAndCharacteristicsAsync()..."
+        );
         const { characteristics } =
           await this.deskPeripheral.discoverAllServicesAndCharacteristicsAsync();
 
