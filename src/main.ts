@@ -94,6 +94,7 @@ class Main {
         );
         const { characteristics } =
           await this.deskPeripheral.discoverAllServicesAndCharacteristicsAsync();
+        debugLog(this.config, "Discovered characteristics:", characteristics);
 
         const desk: Desk = new Desk(characteristics, this.config);
         await desk.initialize();
