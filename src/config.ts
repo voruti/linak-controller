@@ -61,7 +61,7 @@ export class Config {
       ? parseFloat(process.env.LC_MOVE_COMMAND_PERIOD)
       : this.moveCommandPeriod;
     this.debug = process.env.LC_DEBUG
-      ? !["0", "false", "no", "wrong"].includes(
+      ? !["0", "false", "no", "wrong", "off"].includes(
           process.env.LC_DEBUG.trim().toLowerCase()
         )
       : this.debug;
