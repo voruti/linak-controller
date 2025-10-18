@@ -14,6 +14,7 @@ export class Config {
   debug: boolean = false;
   webhookPutHeight?: string;
   webhookPutHeightHeaders?: string;
+  allowDownwardMovement: boolean = true;
 
   constructor() {
     // Overwrite config from environment variables
@@ -67,5 +68,10 @@ export class Config {
       : this.debug;
     this.webhookPutHeight = process.env.LC_WEBHOOK_PUT_HEIGHT;
     this.webhookPutHeightHeaders = process.env.LC_WEBHOOK_PUT_HEIGHT_HEADERS;
+    this.allowDownwardMovement = process.env.LC_ALLOW_DOWNWARD_MOVEMENT
+      ? !["0", "false", "no", "wrong", "off"].includes(
+          process.env.LC_ALLOW_DOWNWARD_MOVEMENT.trim().toLowerCase()
+        )
+      : this.allowDownwardMovement;
   }
 }

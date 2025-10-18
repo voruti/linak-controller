@@ -114,6 +114,13 @@ export class Desk {
       // first move up - prevents desk getting stuck:
       await this.stepUpwards();
     }
+    if (
+      !this.config.allowDownwardMovement &&
+      target.value < heightAndSpeed.height.value
+    ) {
+      debugLog(this.config, "move_to - aborting moving down");
+      return;
+    }
 
     const thevalue = target.value;
     debugLog(this.config, "move_to - thevalue is", thevalue);
