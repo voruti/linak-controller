@@ -33,7 +33,7 @@ class Main {
       await noble.startScanningAsync();
 
       for await (const peripheral of noble.discoverAsync()) {
-        debugLog(this.config, "peripheral", peripheral);
+        debugLog(this.config, "discovered peripheral", peripheral);
 
         if (peripheral.address === this.config.macAddress) {
           console.log("Found MAC address");
