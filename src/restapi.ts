@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import type { Express, Request, Response } from "express";
-import https from "https";
+import https from "node:https";
 
 import { Config } from "./config";
 import { debounce } from "./debouncer";
@@ -113,10 +113,10 @@ export class RestApi {
   ): void {
     let targetHeightNumber: number;
     try {
-      targetHeightNumber = parseFloat(targetHeight.toString());
+      targetHeightNumber = Number.parseFloat(targetHeight.toString());
 
-      if (isNaN(targetHeightNumber)) {
-        throw new Error();
+      if (Number.isNaN(targetHeightNumber)) {
+        throw new Error("Request contains invalid height"); // nosonar
       }
     } catch {
       response.sendStatus(400);

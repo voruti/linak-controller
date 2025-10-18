@@ -1,4 +1,4 @@
-import { platform } from "os";
+import { platform } from "node:os";
 
 export class Config {
   // Config
@@ -42,24 +42,24 @@ export class Config {
     // Load values from environment variables, if available
     this.macAddress = process.env.LC_MAC_ADDRESS ?? this.macAddress;
     this.baseHeight = process.env.LC_BASE_HEIGHT
-      ? parseInt(process.env.LC_BASE_HEIGHT)
+      ? Number.parseInt(process.env.LC_BASE_HEIGHT)
       : this.baseHeight;
     this.maxHeight = process.env.LC_MAX_HEIGHT
-      ? parseInt(process.env.LC_MAX_HEIGHT)
+      ? Number.parseInt(process.env.LC_MAX_HEIGHT)
       : this.maxHeight;
     this.adapterName = process.env.LC_ADAPTER_NAME ?? this.adapterName;
     this.scanTimeout = process.env.LC_SCAN_TIMEOUT
-      ? parseInt(process.env.LC_SCAN_TIMEOUT)
+      ? Number.parseInt(process.env.LC_SCAN_TIMEOUT)
       : this.scanTimeout;
     this.connectionTimeout = process.env.LC_CONNECTION_TIMEOUT
-      ? parseInt(process.env.LC_CONNECTION_TIMEOUT)
+      ? Number.parseInt(process.env.LC_CONNECTION_TIMEOUT)
       : this.connectionTimeout;
     this.serverAddress = process.env.LC_SERVER_ADDRESS ?? this.serverAddress;
     this.serverPort = process.env.LC_SERVER_PORT
-      ? parseInt(process.env.LC_SERVER_PORT)
+      ? Number.parseInt(process.env.LC_SERVER_PORT)
       : this.serverPort;
     this.moveCommandPeriod = process.env.LC_MOVE_COMMAND_PERIOD
-      ? parseFloat(process.env.LC_MOVE_COMMAND_PERIOD)
+      ? Number.parseFloat(process.env.LC_MOVE_COMMAND_PERIOD)
       : this.moveCommandPeriod;
     this.debug = process.env.LC_DEBUG
       ? !["0", "false", "no", "wrong", "off"].includes(
