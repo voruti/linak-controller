@@ -1,6 +1,6 @@
 // High level helper class to organise methods for performing actions with a Linak Desk.
 
-import noble from "@abandonware/noble";
+import type { Characteristic as NobleCharacteristic } from "@stoprocent/noble";
 
 import type { Config } from "./config";
 import {
@@ -28,7 +28,7 @@ interface Capabilities {
 
 export class Desk {
   constructor(
-    private readonly characteristics: noble.Characteristic[],
+    private readonly characteristics: NobleCharacteristic[],
     private readonly config: Config
   ) {}
 

@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/voruti/linak-controller/tree/typescript-rewrite#readme",
   "dependencies": {
-    "@abandonware/noble": "1.9.2-26",
+    "@stoprocent/noble": "^2.3.6",
     "console-stamp": "3.1.2",
     "express": "4.21.2"
   },

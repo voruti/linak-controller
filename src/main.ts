@@ -1,4 +1,4 @@
-import noble, { type Peripheral } from "@abandonware/noble";
+import noble, { type Peripheral } from "@stoprocent/noble";
 import consoleStamp from "console-stamp";
 import express, { type Express } from "express";
 
@@ -28,45 +28,41 @@ class Main {
   private async connect(): Promise<Peripheral> {
     console.log("Trying to connect to", this.config.macAddress.toUpperCase());
 
-    // make variables accessible:
-    const _this = this;
+    try {
+      await noble.waitForPoweredOnAsync();
+      await noble.startScanningAsync();
 
-    async function stateChangeCallback(state: string) {
-      debugLog(_this.config, "state", state);
+      for await (const peripheral of noble.discoverAsync()) {
+        debugLog(this.config, "peripheral", peripheral);
 
-      if (state === "poweredOn") {
-        noble.removeListener("stateChange", stateChangeCallback);
-        await noble.startScanningAsync();
-      }
-    }
-    noble.on("stateChange", stateChangeCallback);
-
-    return await new Promise((resolve) => {
-      async function discoverCallback(peripheral: Peripheral) {
-        debugLog(_this.config, "peripheral", peripheral);
-
-        if (peripheral.address === _this.config.macAddress) {
+        if (peripheral.address === this.config.macAddress) {
           console.log("Found MAC address");
 
-          noble.removeListener("discover", discoverCallback);
           await noble.stopScanningAsync();
 
           // handle loosing connection:
           peripheral.on("disconnect", () => {
             console.log("Lost connection with desk");
 
-            _this.disconnect(false);
+            this.disconnect(false);
           });
 
           console.log("Starting connection");
           await peripheral.connectAsync();
           console.log("Connected");
 
-          resolve(peripheral);
+          return peripheral;
         }
       }
-      noble.on("discover", discoverCallback);
-    });
+
+      debugLog(this.config, "after the loop");
+      throw new Error("after the loop");
+    } catch (error) {
+      console.error("Discovery error:", error);
+      throw error;
+    } finally {
+      await noble.stopScanningAsync();
+    }
   }
 
   private async runServer(desk: Desk): Promise<void> {

@@ -1,6 +1,6 @@
 // Low level helper classes to organise methods for interacting with the GATT services/characteristics provided by Linak Desks.
 
-import type { Characteristic as NobleCharacteristic } from "@abandonware/noble";
+import type { Characteristic as NobleCharacteristic } from "@stoprocent/noble";
 
 import type { Config } from "./config";
 import {
