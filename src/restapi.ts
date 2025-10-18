@@ -46,14 +46,16 @@ export class RestApi {
           : undefined,
       };
     }
+  }
 
+  public setup(): void {
     const callback = (heightAndSpeed: HeightAndSpeed) => {
       this.currentHnS = heightAndSpeed;
 
       if (this.webhookPutHeightOptions) {
         debounce("webhookPutHeight", 1000).then((shouldExecute) => {
           if (shouldExecute && this.webhookPutHeightOptions) {
-            debugLog(config, "Executing webhook...");
+            debugLog(this.config, "Executing webhook...");
             const req = https.request(this.webhookPutHeightOptions);
             req.write(heightAndSpeed.height.human.toString());
             req.end();
@@ -63,13 +65,13 @@ export class RestApi {
     };
 
     // fetch initial values:
-    desk
+    this.desk
       .getHeightSpeed()
       .then(
         (heightAndSpeed: HeightAndSpeed) => (this.currentHnS = heightAndSpeed)
       );
 
-    desk.watchHeightSpeed(callback.bind(this));
+    this.desk.watchHeightSpeed(callback.bind(this));
   }
 
   private getDesk(_: Request, response: Response): void {

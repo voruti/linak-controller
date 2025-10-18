@@ -68,7 +68,7 @@ class Main {
   private async runServer(desk: Desk): Promise<void> {
     const app: Express = express();
 
-    new RestApi(this.config, app, desk);
+    new RestApi(this.config, app, desk).setup();
 
     app.listen(this.config.serverPort, this.config.serverAddress, () => {
       console.log("Server listening on port", this.config.serverPort);
@@ -79,7 +79,7 @@ class Main {
     });
   }
 
-  private async main(): Promise<void> {
+  public async start(): Promise<void> {
     try {
       debugLog(this.config, "Starting connect");
       this.deskPeripheral = await this.connect();
@@ -114,9 +114,7 @@ class Main {
     consoleStamp(console);
 
     debugLog(this.config, "debug logging enabled");
-
-    this.main();
   }
 }
 
-new Main();
+new Main().start();
