@@ -30,7 +30,9 @@ pkgs.writeShellApplication {
           ]);
       };
 
-      npmDepsHash = "sha256-SOzbJzczGwfQuFYMaJWk8Lg5u9Fwrbqfb13kYqC9YaU=";
+      npmDeps = pkgs.importNpmLock { npmRoot = ./.; };
+
+      npmConfigHook = pkgs.importNpmLock.npmConfigHook;
     }
   }/lib/node_modules/linak-controller/dist/main.js";
 }
