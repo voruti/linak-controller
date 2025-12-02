@@ -23,7 +23,7 @@
   "dependencies": {
     "@stoprocent/noble": "2.3.6",
     "console-stamp": "3.1.2",
-    "express": "4.21.2"
+    "express": "4.22.0"
   },
   "devDependencies": {
     "@types/express": "4.17.23",
