@@ -1,7 +1,11 @@
+# of this flake:
+{ flake, ... }:
+
+# of the flake that is using this module:
 {
   config,
   lib,
-  perSystem,
+  system,
   ...
 }:
 
@@ -128,7 +132,7 @@ in
         );
         LC_ALLOW_DOWNWARD_MOVEMENT = lib.trivial.boolToString cfg.allowDownwardMovement;
       };
-      script = "${lib.getExe perSystem.linak-controller.default}";
+      script = "${lib.meta.getExe flake.packages."${system}".default}";
       serviceConfig.Restart = "always";
 
       # [Install]
