@@ -5,7 +5,7 @@
 {
   config,
   lib,
-  system,
+  pkgs,
   ...
 }:
 
@@ -132,7 +132,7 @@ in
         );
         LC_ALLOW_DOWNWARD_MOVEMENT = lib.trivial.boolToString cfg.allowDownwardMovement;
       };
-      script = "${lib.meta.getExe flake.packages."${system}".default}";
+      script = "${lib.meta.getExe flake.packages."${pkgs.stdenv.hostPlatform.system}".default}";
       serviceConfig.Restart = "always";
 
       # [Install]
