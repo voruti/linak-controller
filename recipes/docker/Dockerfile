@@ -1,4 +1,4 @@
-FROM node:22.23.2@sha256:7725a5c2c83eed1d36258c66efae14b1ceccd021db9ed1d9559d3335ed3d68ed AS builder
+FROM node:24.21.0@sha256:64af3819f9275802414d7cdc38c27e9d82bd564dec4d4da87d008255d36c63b4 AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY ./ ./
 RUN npm run build
 
 
-FROM node:22.23.2@sha256:7725a5c2c83eed1d36258c66efae14b1ceccd021db9ed1d9559d3335ed3d68ed
+FROM node:24.21.0@sha256:64af3819f9275802414d7cdc38c27e9d82bd564dec4d4da87d008255d36c63b4
 
 # install required packages:
 RUN apt-get update && \
